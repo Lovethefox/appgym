@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GYMTECH Mockup</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Or embed CSS here using <style> tags -->
+</head>
+<body>
+
+    <div class="phone-mockup">
+        <div class="screen-content">
+
+            <!-- ================== Home Screen ================== -->
+            <div id="home-screen" class="screen active">
+                <header class="app-header">
+                    <span class="header-icon">☰</span> <!-- Hamburger Menu -->
+                    <h1>Hello Hường!</h1>
+                    <span class="header-icon profile-icon">👤</span> <!-- Profile Icon -->
+                </header>
+
+                <!-- Calendar Section -->
+                <div class="card calendar-card">
+                    <h2>Calendar</h2>
+                    <div class="calendar-weeks">
+                        <span>Week 1</span>
+                        <span>Week 2</span>
+                        <span class="active">Week 3</span>
+                        <span>Week 4</span>
+                        <span>...</span>
+                    </div>
+                    <div class="calendar-days">
+                        <div class="day done"><small>Mon</small><span>✓</span></div>
+                        <div class="day"><small>Tue</small><span>🗓️</span></div>
+                        <div class="day done"><small>Wed</small><span>✓</span></div>
+                        <div class="day"><small>Thu</small><span>🗓️</span></div>
+                        <div class="day"><small>Fri</small><span>🗓️</span></div>
+                        <div class="day"><small>Sat</small><span>🏋️</span></div>
+                        <div class="day"><small>Sun</small><span>🗓️</span></div>
+                    </div>
+                </div>
+
+                <!-- Exercise Section -->
+                 <div class="exercise-section">
+                    <h2>Exercise</h2>
+                     <div class="exercise-category-list">
+                        <div class="exercise-category-card selected" style="background-image: linear-gradient(to right, rgba(0,0,0,0.6), transparent), url('placeholder_chest.jpg'); background-color: #ff8c00;"> <!-- Placeholder Orange BG -->
+                            <span class="cat-icon">💪</span>
+                            <div class="cat-info">
+                                <span class="cat-title">Chest</span>
+                                <span class="cat-rating">★★★★★</span>
+                            </div>
+                        </div>
+                        <div class="exercise-category-card" style="background-image: linear-gradient(to right, rgba(0,0,0,0.6), transparent), url('placeholder_shoulder.jpg'); background-color: #0056b3;"> <!-- Placeholder Blue BG -->
+                            <span class="cat-icon">🏋️</span>
+                             <div class="cat-info">
+                                <span class="cat-title">Shoulder</span>
+                                <span class="cat-rating">★★★★☆</span>
+                            </div>
+                        </div>
+                        <div class="exercise-category-card" style="background-image: linear-gradient(to right, rgba(0,0,0,0.6), transparent), url('placeholder_abs.jpg'); background-color: #5a6268;"> <!-- Placeholder Gray BG -->
+                             <span class="cat-icon">🤸</span>
+                            <div class="cat-info">
+                                <span class="cat-title">Abs</span>
+                                <span class="cat-rating">★★★★★</span>
+                            </div>
+                        </div>
+                        <div class="exercise-category-card" style="background-image: linear-gradient(to right, rgba(0,0,0,0.6), transparent), url('placeholder_legs.jpg'); background-color: #1e7e34;"> <!-- Placeholder Green BG -->
+                             <span class="cat-icon">🦵</span>
+                            <div class="cat-info">
+                                <span class="cat-title">Legs</span>
+                                <span class="cat-rating">★★★★☆</span>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+
+
+                <button class="btn btn-primary btn-start-workout">
+                    ▶️ Start Workout
+                </button>
+
+                 <!-- Optional Streak/Calorie Cards (can be added back if needed) -->
+                 <!--
+                 <div class="card streak-card"> ... </div>
+                 <div class="card calorie-card"> ... </div>
+                 -->
+
+            </div>
+
+            <!-- ================== Workout Session Screen ================== -->
+            <div id="workout-screen" class="screen">
+                 <div class="camera-placeholder">
+                    <p>[Camera View Area]</p>
+                    <div class="skeleton-overlay">
+                        <div class="joint" style="top: 30%; left: 50%;"></div>
+                        <div class="joint correct" style="top: 50%; left: 45%;"></div>
+                        <div class="joint incorrect" style="top: 70%; left: 55%;"></div>
+                        <div class="bone" style="top: 40%; left: 47.5%; width: 20%; transform: rotate(10deg);"></div>
+                    </div>
+                 </div>
+                 <div class="workout-overlay">
+                     <header class="workout-header">
+                         <span class="back-arrow">‹</span>
+                         <h2>Deep Squat Hold</h2>
+                         <span>✖️</span>
+                     </header>
+                     <div class="ai-feedback">
+                         <p>⚠️ Keep your back straight!</p>
+                     </div>
+                     <div class="workout-stats">
+                         <div class="stat-item">
+                             <span class="value">12</span>
+                             <span class="label">Reps</span>
+                         </div>
+                         <div class="stat-item">
+                             <span class="value">01:35</span>
+                             <span class="label">Time</span>
+                         </div>
+                     </div>
+                     <div class="workout-controls">
+                         <button class="btn-icon">⏭️</button> <!-- Skip -->
+                         <button class="btn-icon btn-pause-play">❚❚</button> <!-- Pause -->
+                         <button class="btn-icon btn-stop">⏹️</button> <!-- Stop -->
+                     </div>
+                 </div>
+            </div>
+
+            <!-- ================== Exercise Library Screen ================== -->
+            <div id="library-screen" class="screen">
+                 <header class="app-header fixed">
+                    <span class="back-arrow">‹</span>
+                     <h1>Exercise Library</h1>
+                     <span class="header-icon">🔍</span> <!-- Search Icon -->
+                 </header>
+                 <div class="search-filter-bar">
+                     <!-- Search input can be triggered by the header icon -->
+                     <select>
+                         <option value="">All Muscle Groups</option>
+                         <option value="legs">Legs</option>
+                         <option value="chest">Chest</option>
+                         <option value="back">Back</option>
+                         <option value="arms">Arms</option>
+                         <option value="abs">Abs</option>
+                         <option value="shoulders">Shoulders</option>
+                     </select>
+                 </div>
+                 <ul class="exercise-list">
+                     <li class="exercise-item">
+                         <span class="icon exercise-icon">🦵</span>
+                         <div class="info">
+                             <p>Deep Squat Hold</p>
+                             <small>Muscle Group: Legs, Glutes</small>
+                         </div>
+                         <span class="arrow">›</span>
+                     </li>
+                      <li class="exercise-item">
+                         <span class="icon exercise-icon">💪</span>
+                         <div class="info">
+                             <p>Standard Push Up</p>
+                             <small>Muscle Group: Chest, Triceps</small>
+                         </div>
+                         <span class="arrow">›</span>
+                     </li>
+                     <li class="exercise-item">
+                         <span class="icon exercise-icon">🧍</span>
+                         <div class="info">
+                             <p>Plank</p>
+                             <small>Muscle Group: Abs, Core</small>
+                         </div>
+                         <span class="arrow">›</span>
+                     </li>
+                      <li class="exercise-item">
+                         <span class="icon exercise-icon">🏋️</span>
+                         <div class="info">
+                             <p>Dumbbell Rows</p>
+                             <small>Muscle Group: Back, Biceps</small>
+                         </div>
+                         <span class="arrow">›</span>
+                     </li>
+                     <!-- Add more exercises -->
+                 </ul>
+            </div>
+
+             <!-- ================== Progress Screen ================== -->
+             <div id="progress-screen" class="screen">
+                 <header class="app-header fixed">
+                    <h1>Progress Tracking</h1>
+                 </header>
+                 <div class="tab-buttons">
+                     <button class="tab-btn active" data-target="overview-tab">Overview</button>
+                     <button class="tab-btn" data-target="history-tab">History</button>
+                 </div>
+
+                 <div id="overview-tab" class="tab-content active">
+                     <div class="stats-grid">
+                         <div class="stat-card">
+                            <span>🏋️</span>
+                            <span class="value">55</span>
+                            <small>Workouts</small>
+                         </div>
+                         <div class="stat-card">
+                             <span>⏱️</span>
+                             <span class="value">42.5 h</span>
+                             <small>Total Hours</small>
+                         </div>
+                          <div class="stat-card">
+                             <span class="icon streak-icon">🔥</span>
+                             <span class="value">15</span>
+                             <small>Current Streak</small>
+                         </div>
+                          <div class="stat-card">
+                             <span>⭐</span>
+                             <span class="value">25</span>
+                             <small>Record Streak</small>
+                         </div>
+                     </div>
+                     <h2>Calories This Week</h2>
+                     <div class="chart-placeholder">
+                         [Bar Chart: Calories Burned]
+                     </div>
+                 </div>
+
+                 <div id="history-tab" class="tab-content">
+                     <ul class="history-list">
+                         <li class="history-item">
+                             <span class="date">🗓️ Jul 25</span>
+                             <div class="info">
+                                 <p>Leg Day Workout</p>
+                                 <small>45 min - 410 Kcal</small>
+                             </div>
+                             <span class="arrow">›</span>
+                         </li>
+                          <li class="history-item">
+                             <span class="date">🗓️ Jul 23</span>
+                             <div class="info">
+                                 <p>Chest & Triceps</p>
+                                 <small>40 min - 380 Kcal</small>
+                             </div>
+                             <span class="arrow">›</span>
+                         </li>
+                         <!-- Add more history items -->
+                     </ul>
+                 </div>
+             </div>
+
+            <!-- ================== Leaderboard Screen ================== -->
+             <div id="leaderboard-screen" class="screen">
+                  <header class="app-header fixed">
+                     <h1>Leaderboard</h1>
+                     <div class="header-icons">
+                        <select class="filter-select">
+                            <option>By Streak</option>
+                            <option>By Total Time</option>
+                            <option>By Total Calories</option>
+                        </select>
+                     </div>
+                 </header>
+                  <ul class="leaderboard-list">
+                     <li class="leaderboard-item rank-1">
+                         <span class="rank">#1 🏆</span>
+                         <span class="avatar">👤</span>
+                         <span class="name">Nhật</span>
+                         <span class="score">48 days</span>
+                     </li>
+                     <li class="leaderboard-item rank-2">
+                         <span class="rank">#2</span>
+                         <span class="avatar">👤</span>
+                         <span class="name">Hội</span>
+                         <span class="score">45 days</span>
+                     </li>
+                      <li class="leaderboard-item rank-3">
+                         <span class="rank">#3</span>
+                         <span class="avatar">👤</span>
+                         <span class="name">Nguyên</span>
+                         <span class="score">41 days</span>
+                     </li>
+                      <li class="leaderboard-item current-user">
+                         <span class="rank">#4</span>
+                         <span class="avatar">👤</span>
+                         <span class="name">Hường (You)</span>
+                         <span class="score">39 days</span>
+                     </li>
+                      <li class="leaderboard-item">
+                         <span class="rank">#5</span>
+                         <span class="avatar">👤</span>
+                         <span class="name">Mai</span>
+                         <span class="score">35 days</span>
+                     </li>
+                      <!-- Add more users -->
+                 </ul>
+             </div>
+
+             <!-- ================== Profile Screen ================== -->
+             <div id="profile-screen" class="screen">
+                  <header class="app-header">
+                     <h1>Profile</h1>
+                     <div class="header-icons">
+                         <span>⚙️</span> <!-- Settings Icon -->
+                     </div>
+                 </header>
+                 <div class="profile-header">
+                     <div class="profile-avatar">👤</div>
+                     <h2>Huong</h2>
+                     <p>huong@email.com</p>
+                 </div>
+                 <div class="profile-section">
+                     <h3>Details</h3>
+                     <div class="profile-item">
+                         <span>🎯</span>
+                         <span>Goal</span>
+                         <span class="value">Build Muscle</span>
+                     </div>
+                     <div class="profile-item">
+                         <span>⚖️</span>
+                         <span>Weight</span>
+                         <span class="value">70.5 kg</span>
+                     </div>
+                     <div class="profile-item">
+                         <span>📏</span>
+                         <span>Height</span>
+                         <span class="value">175 cm</span>
+                     </div>
+                 </div>
+                  <div class="profile-section">
+                     <h3>More</h3>
+                      <div class="profile-item">
+                         <span>🔔</span>
+                         <span>Notifications</span>
+                         <span class="arrow">›</span>
+                     </div>
+                      <div class="profile-item">
+                         <span>🔒</span>
+                         <span>Privacy</span>
+                          <span class="arrow">›</span>
+                     </div>
+                     <div class="profile-item">
+                         <span>❓</span>
+                         <span>Help & Support</span>
+                          <span class="arrow">›</span>
+                     </div>
+                     <div class="profile-item logout">
+                         <span>🚪</span>
+                         <span>Logout</span>
+                     </div>
+                 </div>
+             </div>
+
+        </div> <!-- End screen-content -->
+
+        <!-- ================== Bottom Navigation ================== -->
+        <nav class="bottom-nav">
+            <a href="#home-screen" class="nav-item active" data-target="home-screen">
+                <span class="icon">🏠</span>
+                <span class="label">Home</span>
+            </a>
+            <a href="#library-screen" class="nav-item" data-target="library-screen">
+                <span class="icon">🏋️</span>
+                <span class="label">Exercises</span>
+            </a>
+            <a href="#progress-screen" class="nav-item" data-target="progress-screen">
+                <span class="icon">📊</span>
+                <span class="label">Progress</span>
+            </a>
+            <a href="#leaderboard-screen" class="nav-item" data-target="leaderboard-screen">
+                <span class="icon">🏆</span>
+                <span class="label">Leaders</span>
+            </a>
+             <a href="#profile-screen" class="nav-item" data-target="profile-screen">
+                <span class="icon">👤</span>
+                <span class="label">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- Or embed JS here using <script> tags -->
+</body>
+</html>

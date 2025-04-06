@@ -1,0 +1,536 @@
+/* Basic Reset & Dark Theme Defaults */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #555; /* Background outside phone */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #f8f9fa; /* Default light text */
+}
+
+.phone-mockup {
+    width: 375px;
+    height: 750px;
+    background-color: #212529; /* Dark background (Bootstrap Dark BG) */
+    border: 12px solid #000;
+    border-radius: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.screen-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    position: relative;
+    padding-bottom: 65px; /* Space for bottom nav */
+}
+/* Custom scrollbar for dark theme */
+.screen-content::-webkit-scrollbar { width: 5px; }
+.screen-content::-webkit-scrollbar-track { background: #343a40; }
+.screen-content::-webkit-scrollbar-thumb { background: #6c757d; border-radius: 3px;}
+.screen-content::-webkit-scrollbar-thumb:hover { background: #adb5bd; }
+
+
+/* Screen Visibility */
+.screen {
+    display: none;
+    padding: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- Common Elements --- */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 5px 0; /* Reduced padding */
+}
+.app-header.fixed {
+     position: sticky;
+     top: 0;
+     background-color: #212529; /* Match screen background */
+     padding: 10px 15px;
+     margin: -15px -15px 15px -15px;
+     z-index: 5;
+     border-bottom: 1px solid #495057; /* Subtle border */
+}
+
+
+.app-header h1 {
+    font-size: 1.4em; /* Slightly smaller */
+    color: #f8f9fa;
+    font-weight: 600;
+    text-align: center;
+    flex-grow: 1; /* Allow title to take space */
+}
+
+.header-icon, .back-arrow {
+    font-size: 1.5em;
+    color: #adb5bd; /* Lighter gray for icons */
+    cursor: pointer;
+    padding: 5px;
+}
+.back-arrow { margin-right: 10px;} /* Space after back arrow */
+.profile-icon {
+    /* Add styling if you want a circle bg later */
+}
+
+.header-icons { /* Container for multiple icons on the right */
+     display: flex;
+     align-items: center;
+}
+.header-icons span, .header-icons select {
+    font-size: 1.3em;
+    margin-left: 12px;
+    cursor: pointer;
+    color: #adb5bd;
+}
+.header-icons select.filter-select {
+    font-size: 0.7em;
+    background: #343a40; /* Lighter gray bg */
+    color: #f8f9fa;
+    border: 1px solid #495057; /* Subtle border */
+    padding: 6px 8px;
+    border-radius: 5px;
+}
+
+
+.card {
+    background-color: #343a40; /* Lighter gray card */
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #495057; /* Subtle border */
+}
+
+.card h2 {
+    font-size: 1.1em;
+    margin-bottom: 12px;
+    color: #f8f9fa;
+    font-weight: 600;
+}
+
+.icon {
+    font-size: 1.5em; /* Adjusted icon size */
+    margin-right: 10px;
+}
+
+.value {
+    font-size: 1.4em; /* Adjusted value size */
+    font-weight: bold;
+    color: #f8f9fa;
+}
+
+p {
+    color: #adb5bd; /* Lighter gray text */
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+small {
+    color: #6c757d; /* Darker gray for less important text */
+    font-size: 0.8em;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 25px; /* More rounded buttons */
+    font-size: 1em;
+    font-weight: 600; /* Slightly bolder */
+    cursor: pointer;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #0d6efd; /* Bootstrap Primary Blue */
+    color: #ffffff;
+}
+.btn-primary:hover {
+    background-color: #0b5ed7; /* Darker blue on hover */
+}
+
+/* --- Home Screen Specific --- */
+.calendar-card {} /* Standard card styling */
+.calendar-weeks {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+    font-size: 0.8em;
+    color: #6c757d;
+}
+.calendar-weeks span.active {
+    color: #ffc107; /* Orange accent */
+    font-weight: bold;
+}
+.calendar-days {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+.calendar-days .day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.calendar-days .day small { /* Mon, Tue labels */
+    font-size: 0.7em;
+    color: #adb5bd;
+    margin-bottom: 5px;
+}
+.calendar-days .day span { /* Icon/Check */
+    font-size: 1.2em;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 50%;
+    background-color: #495057; /* Darker gray circle */
+    color: #adb5bd;
+    display: inline-block;
+}
+.calendar-days .day.done span {
+    background-color: #198754; /* Bootstrap Success Green */
+    color: #fff;
+    font-weight: bold;
+}
+
+.exercise-section h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #f8f9fa;
+}
+.exercise-category-list {
+    /* If horizontal scroll needed: */
+    /* display: flex; */
+    /* overflow-x: auto; */
+    /* white-space: nowrap; */
+    /* padding-bottom: 10px; */ /* Space for scrollbar */
+    display: grid; /* Or use grid */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Responsive grid */
+    gap: 10px;
+}
+
+.exercise-category-card {
+    background-color: #495057; /* Fallback BG */
+    border-radius: 10px;
+    padding: 15px;
+    min-height: 80px; /* Minimum height */
+    display: flex;
+    align-items: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+     /* Basic background setup */
+    background-size: cover;
+    background-position: center right; /* Position image to the right */
+}
+.exercise-category-card:hover {
+     border-color: #6c757d;
+}
+
+.exercise-category-card.selected {
+    border-color: #ffc107; /* Orange border for selected */
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5); /* Orange glow */
+}
+
+.exercise-category-card .cat-icon {
+    font-size: 1.8em;
+    margin-right: 10px;
+    opacity: 0.8; /* Slight transparency */
+}
+.exercise-category-card .cat-info {
+    flex-grow: 1;
+}
+.exercise-category-card .cat-title {
+    font-size: 1em;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 3px;
+}
+.exercise-category-card .cat-rating {
+    font-size: 0.8em;
+    color: #ffc107; /* Orange stars */
+}
+
+
+/* --- Workout Screen Specific --- */
+#workout-screen { padding: 0; }
+
+.camera-placeholder {
+    height: 100%;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555;
+    font-size: 1.2em;
+    position: relative;
+    text-align: center;
+}
+.skeleton-overlay { /* Mockup visual feedback */
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0.5;
+}
+.skeleton-overlay .joint { /* Mockup joint */
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background-color: #ccc; transform: translate(-50%, -50%);
+}
+.skeleton-overlay .joint.correct { background-color: #198754; } /* Green */
+.skeleton-overlay .joint.incorrect { background-color: #dc3545; } /* Red */
+.skeleton-overlay .bone { /* Mockup bone */
+    position: absolute; height: 4px; background-color: #ccc; transform-origin: left center;
+}
+
+
+.workout-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(33, 37, 41, 0.1) 0%, rgba(33, 37, 41, 0.7) 70%, rgba(33, 37, 41, 0.95) 100%);
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 15px; padding-top: 25px; /* More space at top */
+}
+
+.workout-header {
+    display: flex; justify-content: space-between; align-items: center; color: #f8f9fa;
+}
+.workout-header h2 { font-size: 1.3em; flex-grow: 1; text-align: center; margin: 0 10px;}
+.workout-header span { font-size: 1.5em; cursor: pointer; color: #adb5bd;}
+.workout-header .back-arrow { color: #adb5bd; }
+
+
+.ai-feedback {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 8px 15px; border-radius: 20px; text-align: center;
+    margin: 10px auto; max-width: 85%;
+}
+.ai-feedback p {
+    color: #ffc107; /* Orange feedback */
+    font-weight: 600; font-size: 1em;
+}
+
+.workout-stats {
+    display: flex; justify-content: space-around; text-align: center;
+    margin-bottom: 25px;
+}
+.workout-stats .value { font-size: 2.8em; display: block; font-weight: 600; color: #fff;}
+.workout-stats .label { font-size: 0.9em; color: #adb5bd; }
+
+.workout-controls {
+    display: flex; justify-content: space-around; align-items: center;
+    margin-bottom: 25px;
+}
+.btn-icon {
+    background: none; border: none; font-size: 2.5em;
+    color: #adb5bd; cursor: pointer;
+}
+.btn-pause-play { font-size: 4.5em; color: #ffc107; } /* Orange accent */
+.btn-stop { color: #dc3545; } /* Bootstrap Danger Red */
+
+/* --- Library Screen Specific --- */
+#library-screen .app-header { margin-bottom: 0; } /* No margin below fixed header */
+
+.search-filter-bar {
+    padding: 10px 15px; /* Padding since screen padding is removed */
+    background-color: #212529;
+}
+
+.search-filter-bar select {
+    width: 100%; padding: 10px; border-radius: 8px;
+    border: 1px solid #495057; background-color: #343a40;
+    color: #f8f9fa; font-size: 0.9em;
+}
+
+.exercise-list { list-style: none; padding: 15px; } /* Padding back */
+
+.exercise-item {
+    background-color: #343a40; border-radius: 8px;
+    padding: 12px; margin-bottom: 10px; display: flex; align-items: center;
+    cursor: pointer; border: 1px solid #495057;
+}
+.exercise-item:hover { background-color: #495057; }
+.exercise-item .icon.exercise-icon {
+    font-size: 1.8em; margin-right: 15px; width: 40px; text-align: center;
+    color: #ffc107; /* Orange icon */
+}
+.exercise-item .info { flex-grow: 1; }
+.exercise-item .info p { font-size: 1em; color: #f8f9fa; margin-bottom: 3px; font-weight: 500;}
+.exercise-item .info small { color: #adb5bd; } /* Lighter gray subtitle */
+.exercise-item .arrow { color: #6c757d; font-size: 1.2em; }
+
+/* --- Progress Screen Specific --- */
+.tab-buttons {
+    display: flex; background-color: #343a40;
+    border-radius: 8px; margin-bottom: 20px; overflow: hidden;
+    border: 1px solid #495057;
+}
+.tab-btn {
+    flex: 1; padding: 12px; background-color: transparent;
+    border: none; color: #adb5bd; font-size: 0.95em; font-weight: 500;
+    cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s ease;
+}
+.tab-btn.active {
+    color: #ffc107; /* Orange accent */
+    border-bottom-color: #ffc107;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+.stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-bottom: 25px;
+}
+.stats-grid .stat-card {
+    background-color: #343a40; padding: 15px; border-radius: 8px;
+    text-align: center; border: 1px solid #495057;
+}
+.stats-grid .stat-card span:first-child { /* Icon */
+    font-size: 1.8em; display: block; margin-bottom: 8px; color: #adb5bd;
+}
+.stats-grid .stat-card .value {
+    font-size: 1.5em; font-weight: 600; display: block; color: #f8f9fa;
+}
+.stats-grid .stat-card small { font-size: 0.8em; color: #adb5bd; }
+.stats-grid .stat-card .icon.streak-icon { color: #ffc107; } /* Orange fire */
+
+.chart-placeholder {
+    background-color: #343a40; height: 220px; border-radius: 8px;
+    display: flex; justify-content: center; align-items: center;
+    color: #6c757d; font-style: italic; margin-top: 10px;
+    border: 1px solid #495057;
+}
+
+.history-list { list-style: none; }
+.history-item {
+    background-color: #343a40; border-radius: 8px; padding: 12px;
+    margin-bottom: 10px; display: flex; align-items: center;
+    cursor: pointer; border: 1px solid #495057;
+}
+.history-item:hover { background-color: #495057; }
+.history-item .date { font-size: 1.1em; margin-right: 15px; color: #adb5bd; width: 60px;}
+.history-item .info { flex-grow: 1; }
+.history-item .info p { font-size: 1em; color: #f8f9fa; margin-bottom: 3px; font-weight: 500;}
+.history-item .info small { color: #adb5bd; }
+.history-item .arrow { color: #6c757d; font-size: 1.2em; }
+
+
+/* --- Leaderboard Screen Specific --- */
+.leaderboard-list { list-style: none; padding: 15px; }
+.leaderboard-item {
+    display: flex; align-items: center; padding: 12px 5px;
+    border-bottom: 1px solid #495057;
+}
+.leaderboard-item:last-child { border-bottom: none; }
+
+.leaderboard-item .rank {
+    width: 45px; font-weight: bold; font-size: 1.1em;
+    color: #adb5bd; text-align: center;
+}
+.leaderboard-item.rank-1 .rank { color: #ffc107; } /* Gold */
+.leaderboard-item.rank-2 .rank { color: #ced4da; } /* Silver */
+.leaderboard-item.rank-3 .rank { color: #cd7f32; } /* Bronze */
+
+.leaderboard-item .avatar {
+    width: 40px; height: 40px; background-color: #495057;
+    border-radius: 50%; display: inline-flex; justify-content: center;
+    align-items: center; font-size: 1.2em; margin: 0 12px; color: #adb5bd;
+}
+.leaderboard-item .name {
+    flex-grow: 1; font-size: 1em; color: #f8f9fa; font-weight: 500;
+}
+.leaderboard-item .score {
+    font-weight: 600; color: #fff; font-size: 1.1em;
+}
+.leaderboard-item.current-user {
+    background-color: rgba(255, 193, 7, 0.1); /* Slight Orange Highlight */
+    border-left: 3px solid #ffc107;
+    margin-left: -15px; margin-right: -15px; padding-left: 12px;
+}
+.leaderboard-item.current-user .name { font-weight: bold; }
+
+/* --- Profile Screen Specific --- */
+.profile-header { text-align: center; margin-bottom: 30px; }
+.profile-avatar {
+    width: 90px; height: 90px; background-color: #495057;
+    border-radius: 50%; margin: 0 auto 12px auto; display: flex;
+    justify-content: center; align-items: center; font-size: 3em;
+    color: #adb5bd; border: 2px solid #6c757d;
+}
+.profile-header h2 { font-size: 1.5em; color: #f8f9fa; margin-bottom: 5px; font-weight: 600;}
+.profile-header p { font-size: 0.9em; color: #adb5bd; }
+
+.profile-section { margin-bottom: 25px; }
+.profile-section h3 {
+    font-size: 0.9em; color: #adb5bd; text-transform: uppercase;
+    margin-bottom: 10px; border-bottom: 1px solid #495057;
+    padding-bottom: 6px; font-weight: 600;
+}
+.profile-item {
+    display: flex; align-items: center; padding: 14px 5px;
+    font-size: 1em; color: #f8f9fa; border-bottom: 1px solid #343a40; /* Darker separator */
+    cursor: pointer; transition: background-color 0.2s ease;
+}
+.profile-item:last-child { border-bottom: none; }
+.profile-item:hover { background-color: #343a40; }
+.profile-item span:first-child { /* Icon */
+    font-size: 1.3em; margin-right: 18px; width: 25px; text-align: center;
+    color: #adb5bd;
+}
+.profile-item span:nth-child(2) { /* Label */
+    flex-grow: 1; font-weight: 500;
+}
+.profile-item .value { color: #adb5bd; font-weight: normal; }
+.profile-item .arrow { color: #6c757d; font-size: 1.1em; }
+.profile-item.logout span:nth-child(2) { color: #dc3545; } /* Red */
+.profile-item.logout span:first-child { color: #dc3545; }
+
+
+/* --- Bottom Navigation --- */
+.bottom-nav {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 65px; background-color: #343a40; /* Lighter gray nav */
+    border-top: 1px solid #495057; display: flex;
+    justify-content: space-around; align-items: center; padding-bottom: 5px;
+    z-index: 10;
+}
+
+.nav-item {
+    display: flex; flex-direction: column; align-items: center;
+    color: #adb5bd; /* Inactive color - Lighter gray */
+    text-decoration: none; flex: 1; padding-top: 5px;
+    transition: color 0.2s ease;
+}
+
+.nav-item .icon { font-size: 1.6em; margin-bottom: 4px; }
+.nav-item .label { font-size: 0.7em; }
+
+.nav-item.active {
+    color: #ffc107; /* Orange accent for active */
+}
+.nav-item.active .label { font-weight: bold; }
