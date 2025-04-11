@@ -1,4 +1,4 @@
-/* Basic Reset & Dark Theme Defaults */
+/* === Basic Reset & Dark Theme Defaults === */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -13,6 +13,7 @@ body {
     align-items: center;
     min-height: 100vh;
     color: #f8f9fa; /* Default light text */
+    line-height: 1.5;
 }
 
 .phone-mockup {
@@ -28,509 +29,454 @@ body {
     flex-direction: column;
 }
 
+/* === Screen Content Wrapper === */
 .screen-content {
     flex-grow: 1;
-    overflow-y: auto;
-    position: relative;
-    padding-bottom: 65px; /* Space for bottom nav */
+    overflow: hidden; /* Prevent double scrollbars with absolute screens */
+    position: relative; /* Context for absolute positioned screens */
 }
-/* Custom scrollbar for dark theme */
-.screen-content::-webkit-scrollbar { width: 5px; }
-.screen-content::-webkit-scrollbar-track { background: #343a40; }
-.screen-content::-webkit-scrollbar-thumb { background: #6c757d; border-radius: 3px;}
-.screen-content::-webkit-scrollbar-thumb:hover { background: #adb5bd; }
+/* Custom scrollbar (applies to scrolling within .screen now) */
+.screen::-webkit-scrollbar { width: 5px; }
+.screen::-webkit-scrollbar-track { background: #343a40; }
+.screen::-webkit-scrollbar-thumb { background: #6c757d; border-radius: 3px;}
+.screen::-webkit-scrollbar-thumb:hover { background: #adb5bd; }
 
 
-/* Screen Visibility */
+/* === Screen Visibility (REVISED with position: absolute) === */
 .screen {
-    display: none;
+    display: block; /* Use block with absolute positioning */
+    visibility: hidden; /* Start hidden */
+    opacity: 0; /* Start transparent */
+    position: absolute; /* Take screens out of normal flow */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Screens now fill the .screen-content */
+    overflow-y: auto; /* Allow scrolling WITHIN the screen */
+    transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; /* Fade effect, delay visibility change */
     padding: 15px;
-    animation: fadeIn 0.3s ease-in-out;
+    pointer-events: none; /* Prevent interaction when hidden */
+    z-index: 1; /* Default stack level */
+    background-color: #212529; /* Ensure background for overlap */
 }
 
 .screen.active {
-    display: block;
+    visibility: visible; /* Make it visible */
+    opacity: 1; /* Make it fully opaque */
+    pointer-events: auto; /* Allow interaction */
+    z-index: 2; /* Bring active screen to the front */
+    transition: opacity 0.3s ease-in-out, visibility 0s linear 0s; /* Remove delay for visibility */
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
 
-/* --- Common Elements --- */
+/* === Common Elements === */
 .app-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    padding: 5px 0; /* Reduced padding */
+    padding: 5px 0;
 }
 .app-header.fixed {
-     position: sticky;
-     top: 0;
-     background-color: #212529; /* Match screen background */
+     position: sticky; /* Sticky now relative to the scrolling .screen */
+     top: -15px; /* Adjust based on .screen padding */
+     background-color: #212529;
      padding: 10px 15px;
      margin: -15px -15px 15px -15px;
-     z-index: 5;
-     border-bottom: 1px solid #495057; /* Subtle border */
+     z-index: 5; /* Header above screen content */
+     border-bottom: 1px solid #495057;
 }
 
-
 .app-header h1 {
-    font-size: 1.4em; /* Slightly smaller */
+    font-size: 1.4em;
     color: #f8f9fa;
     font-weight: 600;
     text-align: center;
-    flex-grow: 1; /* Allow title to take space */
+    flex-grow: 1;
 }
 
 .header-icon, .back-arrow {
     font-size: 1.5em;
-    color: #adb5bd; /* Lighter gray for icons */
+    color: #adb5bd;
     cursor: pointer;
     padding: 5px;
 }
-.back-arrow { margin-right: 10px;} /* Space after back arrow */
-.profile-icon {
-    /* Add styling if you want a circle bg later */
-}
+.back-arrow { margin-right: 10px;}
+.profile-icon {}
+.post-icon { font-weight: bold; }
 
-.header-icons { /* Container for multiple icons on the right */
-     display: flex;
-     align-items: center;
-}
+.header-icons { display: flex; align-items: center; }
 .header-icons span, .header-icons select {
-    font-size: 1.3em;
-    margin-left: 12px;
-    cursor: pointer;
-    color: #adb5bd;
+    font-size: 1.3em; margin-left: 12px; cursor: pointer; color: #adb5bd;
 }
 .header-icons select.filter-select {
-    font-size: 0.7em;
-    background: #343a40; /* Lighter gray bg */
-    color: #f8f9fa;
-    border: 1px solid #495057; /* Subtle border */
-    padding: 6px 8px;
-    border-radius: 5px;
+    font-size: 0.7em; background: #343a40; color: #f8f9fa; border: 1px solid #495057;
+    padding: 6px 8px; border-radius: 5px;
 }
-
 
 .card {
-    background-color: #343a40; /* Lighter gray card */
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-    border: 1px solid #495057; /* Subtle border */
+    background-color: #343a40; border-radius: 10px; padding: 15px;
+    margin-bottom: 15px; border: 1px solid #495057;
 }
-
 .card h2 {
-    font-size: 1.1em;
-    margin-bottom: 12px;
-    color: #f8f9fa;
-    font-weight: 600;
+    font-size: 1.1em; margin-bottom: 12px; color: #f8f9fa; font-weight: 600;
 }
-
-.icon {
-    font-size: 1.5em; /* Adjusted icon size */
-    margin-right: 10px;
-}
-
-.value {
-    font-size: 1.4em; /* Adjusted value size */
-    font-weight: bold;
-    color: #f8f9fa;
-}
-
-p {
-    color: #adb5bd; /* Lighter gray text */
-    font-size: 0.9em;
-    line-height: 1.4;
-}
-small {
-    color: #6c757d; /* Darker gray for less important text */
-    font-size: 0.8em;
-}
+.icon { font-size: 1.5em; margin-right: 10px; }
+.value { font-size: 1.4em; font-weight: bold; color: #f8f9fa; }
+p { color: #adb5bd; font-size: 0.9em; line-height: 1.4; margin-bottom: 0.5em; }
+small { color: #6c757d; font-size: 0.8em; }
 
 .btn {
-    display: block;
-    width: 100%;
-    padding: 12px 15px;
-    border: none;
-    border-radius: 25px; /* More rounded buttons */
-    font-size: 1em;
-    font-weight: 600; /* Slightly bolder */
-    cursor: pointer;
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 15px;
-    transition: background-color 0.2s ease;
+    display: block; width: 100%; padding: 12px 15px; border: none; border-radius: 25px;
+    font-size: 1em; font-weight: 600; cursor: pointer; text-align: center;
+    margin-top: 20px; margin-bottom: 15px; transition: background-color 0.2s ease;
 }
+.btn-primary { background-color: #0d6efd; color: #ffffff; }
+.btn-primary:hover { background-color: #0b5ed7; }
+.btn-secondary { background-color: #495057; color: #f8f9fa; }
+.btn-secondary:hover { background-color: #5a6268; }
 
-.btn-primary {
-    background-color: #0d6efd; /* Bootstrap Primary Blue */
-    color: #ffffff;
-}
-.btn-primary:hover {
-    background-color: #0b5ed7; /* Darker blue on hover */
-}
 
-/* --- Home Screen Specific --- */
-.calendar-card {} /* Standard card styling */
-.calendar-weeks {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 15px;
-    font-size: 0.8em;
-    color: #6c757d;
+/* === Home Screen Specific === */
+.calendar-card {}
+.calendar-weeks { display: flex; justify-content: space-around; margin-bottom: 15px; font-size: 0.8em; color: #6c757d; }
+.calendar-weeks span.active { color: #ffc107; font-weight: bold; }
+.calendar-days { display: flex; justify-content: space-around; text-align: center; }
+.calendar-days .day { display: flex; flex-direction: column; align-items: center; }
+.calendar-days .day small { font-size: 0.7em; color: #adb5bd; margin-bottom: 5px; }
+.calendar-days .day span {
+    font-size: 1.2em; width: 28px; height: 28px; line-height: 28px; border-radius: 50%;
+    background-color: #495057; color: #adb5bd; display: inline-block;
 }
-.calendar-weeks span.active {
-    color: #ffc107; /* Orange accent */
-    font-weight: bold;
-}
-.calendar-days {
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-}
-.calendar-days .day {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.calendar-days .day small { /* Mon, Tue labels */
-    font-size: 0.7em;
-    color: #adb5bd;
-    margin-bottom: 5px;
-}
-.calendar-days .day span { /* Icon/Check */
-    font-size: 1.2em;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    border-radius: 50%;
-    background-color: #495057; /* Darker gray circle */
-    color: #adb5bd;
-    display: inline-block;
-}
-.calendar-days .day.done span {
-    background-color: #198754; /* Bootstrap Success Green */
-    color: #fff;
-    font-weight: bold;
-}
+.calendar-days .day.done span { background-color: #198754; color: #fff; font-weight: bold; }
 
-.exercise-section h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    color: #f8f9fa;
+.calorie-card.home-calories {}
+.home-calories .calorie-display { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.home-calories .current-calories { color: #ffc107; font-size: 1.4em; font-weight: 600;}
+.home-calories .goal { font-size: 0.8em; color: #adb5bd;}
+.home-calories progress {
+    width: 100%; height: 8px; border-radius: 4px; overflow: hidden; border: none;
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
 }
-.exercise-category-list {
-    /* If horizontal scroll needed: */
-    /* display: flex; */
-    /* overflow-x: auto; */
-    /* white-space: nowrap; */
-    /* padding-bottom: 10px; */ /* Space for scrollbar */
-    display: grid; /* Or use grid */
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Responsive grid */
-    gap: 10px;
-}
+.home-calories progress::-webkit-progress-bar { background-color: #495057; border-radius: 4px;}
+.home-calories progress::-webkit-progress-value { background-color: #ffc107; border-radius: 4px; }
+.home-calories progress::-moz-progress-bar { background-color: #ffc107; border-radius: 4px;}
 
+.exercise-section { margin-top: 20px; }
+.exercise-section h2 { font-size: 1.2em; margin-bottom: 10px; color: #f8f9fa; }
+.exercise-category-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
 .exercise-category-card {
-    background-color: #495057; /* Fallback BG */
-    border-radius: 10px;
-    padding: 15px;
-    min-height: 80px; /* Minimum height */
-    display: flex;
-    align-items: center;
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-     /* Basic background setup */
-    background-size: cover;
-    background-position: center right; /* Position image to the right */
+    background-color: #495057; border-radius: 10px; padding: 15px; min-height: 80px;
+    display: flex; align-items: center; color: #fff; position: relative; overflow: hidden;
+    border: 2px solid transparent; cursor: pointer; transition: border-color 0.2s ease;
+    background-size: cover; background-position: center right;
 }
-.exercise-category-card:hover {
-     border-color: #6c757d;
-}
-
-.exercise-category-card.selected {
-    border-color: #ffc107; /* Orange border for selected */
-    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5); /* Orange glow */
-}
-
-.exercise-category-card .cat-icon {
-    font-size: 1.8em;
-    margin-right: 10px;
-    opacity: 0.8; /* Slight transparency */
-}
-.exercise-category-card .cat-info {
-    flex-grow: 1;
-}
-.exercise-category-card .cat-title {
-    font-size: 1em;
-    font-weight: 600;
-    display: block;
-    margin-bottom: 3px;
-}
-.exercise-category-card .cat-rating {
-    font-size: 0.8em;
-    color: #ffc107; /* Orange stars */
-}
+.exercise-category-card:hover { border-color: #6c757d; }
+.exercise-category-card.selected { border-color: #ffc107; box-shadow: 0 0 10px rgba(255, 193, 7, 0.5); }
+.exercise-category-card .cat-icon { font-size: 1.8em; margin-right: 10px; opacity: 0.8; }
+.exercise-category-card .cat-info { flex-grow: 1; }
+.exercise-category-card .cat-title { font-size: 1em; font-weight: 600; display: block; margin-bottom: 3px; }
+.exercise-category-card .cat-rating { font-size: 0.8em; color: #ffc107; }
 
 
-/* --- Workout Screen Specific --- */
-#workout-screen { padding: 0; }
-
-.camera-placeholder {
-    height: 100%;
-    background-color: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #555;
-    font-size: 1.2em;
-    position: relative;
-    text-align: center;
+/* === Workout Screen Specific === */
+/* Override default screen padding and set relative position */
+#workout-screen {
+    padding: 0 !important; /* Force no padding */
+    position: relative !important; /* Ensure positioning context */
+    display: flex; /* Keep flex for internal layout */
+    flex-direction: column;
 }
-.skeleton-overlay { /* Mockup visual feedback */
-    position: absolute;
+
+.live-camera-view {
+    position: absolute; /* Position behind overlay */
     top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0.5;
+    background-color: #000; overflow: hidden;
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1; /* Behind overlay */
 }
-.skeleton-overlay .joint { /* Mockup joint */
+.camera-feed-image {
+    display: block; width: 100%; height: 100%; object-fit: cover;
+}
+.skeleton-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0.6; pointer-events: none; z-index: 2; /* Above camera image */
+}
+.skeleton-overlay .joint {
     position: absolute; width: 10px; height: 10px; border-radius: 50%;
-    background-color: #ccc; transform: translate(-50%, -50%);
+    background-color: #ccc; transform: translate(-50%, -50%); border: 1px solid rgba(0,0,0,0.5);
 }
-.skeleton-overlay .joint.correct { background-color: #198754; } /* Green */
-.skeleton-overlay .joint.incorrect { background-color: #dc3545; } /* Red */
-.skeleton-overlay .bone { /* Mockup bone */
-    position: absolute; height: 4px; background-color: #ccc; transform-origin: left center;
-}
-
+.skeleton-overlay .joint.correct { background-color: #198754; border-color: #0a4a27;}
+.skeleton-overlay .joint.incorrect { background-color: #dc3545; border-color: #8b1e29;}
+.skeleton-overlay .bone { position: absolute; height: 4px; background-color: #ccc; transform-origin: left center; }
 
 .workout-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to bottom, rgba(33, 37, 41, 0.1) 0%, rgba(33, 37, 41, 0.7) 70%, rgba(33, 37, 41, 0.95) 100%);
-    display: flex; flex-direction: column; justify-content: space-between;
-    padding: 15px; padding-top: 25px; /* More space at top */
+    position: absolute; /* Position OVER camera */
+    bottom: 0; left: 0; right: 0; height: auto;
+    background: linear-gradient(to bottom, rgba(33, 37, 41, 0) 0%, rgba(33, 37, 41, 0.8) 40%, rgba(33, 37, 41, 1) 100%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 15px; padding-top: 50px;
+    z-index: 3; /* Above skeleton overlay */
+    /* pointer-events: none; /* Allow clicks to pass through overlay itself if needed */
 }
+/* Allow interaction with elements inside the overlay */
+/* .workout-overlay > * { pointer-events: auto; } */
 
 .workout-header {
+    /* Header inside overlay */
+    position: absolute; top: 15px; left: 15px; right: 15px;
     display: flex; justify-content: space-between; align-items: center; color: #f8f9fa;
+    z-index: 4; /* Above other overlay content */
 }
-.workout-header h2 { font-size: 1.3em; flex-grow: 1; text-align: center; margin: 0 10px;}
-.workout-header span { font-size: 1.5em; cursor: pointer; color: #adb5bd;}
-.workout-header .back-arrow { color: #adb5bd; }
+.workout-info-controls { width: 100%; /* Container for bottom controls */ }
 
+.current-exercise-title { text-align: center; margin-bottom: 10px; }
+.current-exercise-title h2 { font-size: 1.4em; color: #fff; font-weight: 600; }
 
 .ai-feedback {
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 8px 15px; border-radius: 20px; text-align: center;
-    margin: 10px auto; max-width: 85%;
+    background-color: rgba(0, 0, 0, 0.7); padding: 8px 15px; border-radius: 20px;
+    text-align: center; margin: 15px auto; max-width: 90%;
 }
-.ai-feedback p {
-    color: #ffc107; /* Orange feedback */
-    font-weight: 600; font-size: 1em;
+.ai-feedback p { color: #ffc107; font-weight: 600; font-size: 1em; margin-bottom: 0; }
+
+.workout-stats { display: flex; justify-content: space-around; text-align: center; margin-bottom: 20px; }
+.workout-stats .stat-item { flex: 1; }
+.workout-stats .value { font-size: 2.5em; display: block; font-weight: 600; color: #fff; line-height: 1.1;}
+.workout-stats .label { font-size: 0.8em; color: #adb5bd; margin-top: -5px; display: block;}
+
+.workout-controls { display: flex; justify-content: space-around; align-items: center; margin-bottom: 10px; }
+.btn-icon { background: none; border: none; font-size: 2.5em; color: #adb5bd; cursor: pointer; padding: 5px;}
+.btn-icon.btn-secondary {font-size: 1.8em;}
+.btn-pause-play { font-size: 4em; color: #ffc107; padding: 0 10px;}
+.btn-stop { color: #dc3545; }
+
+/* === Fix for Absolute Overlay Bleeding (Keep this rule) === */
+.screen:not(.active) #workout-screen .workout-overlay {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+.screen.active#workout-screen .workout-overlay {
+    display: flex; /* Or block if preferred */
+    visibility: visible;
+    pointer-events: auto; /* Re-enable pointer events for overlay content */
 }
 
-.workout-stats {
-    display: flex; justify-content: space-around; text-align: center;
-    margin-bottom: 25px;
-}
-.workout-stats .value { font-size: 2.8em; display: block; font-weight: 600; color: #fff;}
-.workout-stats .label { font-size: 0.9em; color: #adb5bd; }
 
-.workout-controls {
-    display: flex; justify-content: space-around; align-items: center;
-    margin-bottom: 25px;
-}
-.btn-icon {
-    background: none; border: none; font-size: 2.5em;
-    color: #adb5bd; cursor: pointer;
-}
-.btn-pause-play { font-size: 4.5em; color: #ffc107; } /* Orange accent */
-.btn-stop { color: #dc3545; } /* Bootstrap Danger Red */
-
-/* --- Library Screen Specific --- */
-#library-screen .app-header { margin-bottom: 0; } /* No margin below fixed header */
-
-.search-filter-bar {
-    padding: 10px 15px; /* Padding since screen padding is removed */
-    background-color: #212529;
-}
-
+/* === Library Screen Specific === */
+#library-screen .app-header { margin-bottom: 0; }
+.search-filter-bar { padding: 10px 15px; background-color: #212529; }
 .search-filter-bar select {
-    width: 100%; padding: 10px; border-radius: 8px;
-    border: 1px solid #495057; background-color: #343a40;
-    color: #f8f9fa; font-size: 0.9em;
+    width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #495057;
+    background-color: #343a40; color: #f8f9fa; font-size: 0.9em;
 }
-
-.exercise-list { list-style: none; padding: 15px; } /* Padding back */
-
+.exercise-list { list-style: none; padding: 0 0 15px 0; /* Remove list padding, rely on screen padding */ }
 .exercise-item {
-    background-color: #343a40; border-radius: 8px;
-    padding: 12px; margin-bottom: 10px; display: flex; align-items: center;
-    cursor: pointer; border: 1px solid #495057;
+    background-color: #343a40; border-radius: 8px; padding: 12px; margin-top: 10px;
+    display: flex; align-items: center; cursor: pointer; border: 1px solid #495057;
 }
 .exercise-item:hover { background-color: #495057; }
-.exercise-item .icon.exercise-icon {
-    font-size: 1.8em; margin-right: 15px; width: 40px; text-align: center;
-    color: #ffc107; /* Orange icon */
-}
+.exercise-item .icon.exercise-icon { font-size: 1.8em; margin-right: 15px; width: 40px; text-align: center; color: #ffc107; }
 .exercise-item .info { flex-grow: 1; }
 .exercise-item .info p { font-size: 1em; color: #f8f9fa; margin-bottom: 3px; font-weight: 500;}
-.exercise-item .info small { color: #adb5bd; } /* Lighter gray subtitle */
+.exercise-item .info small { color: #adb5bd; }
 .exercise-item .arrow { color: #6c757d; font-size: 1.2em; }
 
-/* --- Progress Screen Specific --- */
+
+/* === Progress Screen Specific === */
 .tab-buttons {
-    display: flex; background-color: #343a40;
-    border-radius: 8px; margin-bottom: 20px; overflow: hidden;
-    border: 1px solid #495057;
+    display: flex; background-color: #343a40; border-radius: 8px;
+    margin-bottom: 20px; overflow: hidden; border: 1px solid #495057;
 }
 .tab-btn {
-    flex: 1; padding: 12px; background-color: transparent;
-    border: none; color: #adb5bd; font-size: 0.95em; font-weight: 500;
-    cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s ease;
+    flex: 1; padding: 12px; background-color: transparent; border: none;
+    color: #adb5bd; font-size: 0.95em; font-weight: 500; cursor: pointer;
+    border-bottom: 3px solid transparent; transition: all 0.2s ease;
 }
-.tab-btn.active {
-    color: #ffc107; /* Orange accent */
-    border-bottom-color: #ffc107;
-}
-.tab-content { display: none; }
+.tab-btn.active { color: #ffc107; border-bottom-color: #ffc107; }
+.tab-content { display: none; } /* Handled by .screen rules now, but keep for clarity */
 .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
 
 .stats-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-    margin-bottom: 25px;
+    display: grid; gap: 12px; margin-bottom: 25px;
+    grid-template-columns: 1fr 1fr; /* Default 2 columns */
 }
+.stats-grid.four-cols { grid-template-columns: repeat(4, 1fr); }
 .stats-grid .stat-card {
     background-color: #343a40; padding: 15px; border-radius: 8px;
     text-align: center; border: 1px solid #495057;
 }
 .stats-grid .stat-card span:first-child { /* Icon */
-    font-size: 1.8em; display: block; margin-bottom: 8px; color: #adb5bd;
+    font-size: 1.6em; display: block; margin-bottom: 8px; color: #adb5bd;
 }
-.stats-grid .stat-card .value {
-    font-size: 1.5em; font-weight: 600; display: block; color: #f8f9fa;
-}
-.stats-grid .stat-card small { font-size: 0.8em; color: #adb5bd; }
-.stats-grid .stat-card .icon.streak-icon { color: #ffc107; } /* Orange fire */
+.stats-grid .stat-card .value { font-size: 1.3em; font-weight: 600; display: block; color: #f8f9fa;}
+.stats-grid .stat-card small { font-size: 0.75em; color: #adb5bd; margin-top: 2px; display: block;}
+.stats-grid .stat-card .icon.streak-icon { color: #ffc107; }
+.stats-grid .stat-card .icon.calorie-icon { color: #ffc107; }
 
-.chart-placeholder {
-    background-color: #343a40; height: 220px; border-radius: 8px;
-    display: flex; justify-content: center; align-items: center;
-    color: #6c757d; font-style: italic; margin-top: 10px;
-    border: 1px solid #495057;
+
+#progress-screen h2 { /* Title for chart/history */
+    font-size: 1.1em; font-weight: 600; color: #f8f9fa; margin-bottom: 10px; margin-top: 20px;
 }
 
-.history-list { list-style: none; }
+/* Styles for Simulated Bar Chart */
+.chart-container {
+    background-color: #343a40; padding: 20px 10px 10px 10px; border-radius: 8px;
+    display: flex; justify-content: space-around; align-items: flex-end;
+    height: 200px; margin-top: 10px; margin-bottom: 25px; border: 1px solid #495057;
+}
+.chart-bar-wrapper {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    width: 12%; position: relative;
+}
+.chart-bar {
+    width: 80%; max-width: 30px; background-color: #ffc107; border-radius: 4px 4px 0 0;
+    transition: height 0.5s ease-out; min-height: 2px;
+}
+.chart-bar[style*="height: calc(150px * (0 / 550))"] { background-color: #495057; height: 2px !important; }
+.chart-label { font-size: 0.75em; color: #adb5bd; margin-top: 8px; }
+.chart-value-label {
+    font-size: 0.7em; color: #6c757d; position: absolute; top: -18px; left: 50%;
+    transform: translateX(-50%); white-space: nowrap;
+}
+
+/* Styles for history list */
+.history-list { list-style: none; padding: 0; }
 .history-item {
-    background-color: #343a40; border-radius: 8px; padding: 12px;
-    margin-bottom: 10px; display: flex; align-items: center;
-    cursor: pointer; border: 1px solid #495057;
+    background-color: #343a40; border-radius: 8px; padding: 12px; margin-bottom: 10px;
+    display: flex; align-items: center; cursor: pointer; border: 1px solid #495057;
 }
 .history-item:hover { background-color: #495057; }
-.history-item .date { font-size: 1.1em; margin-right: 15px; color: #adb5bd; width: 60px;}
+.history-item .date { font-size: 0.9em; margin-right: 15px; color: #adb5bd; width: 60px;}
 .history-item .info { flex-grow: 1; }
-.history-item .info p { font-size: 1em; color: #f8f9fa; margin-bottom: 3px; font-weight: 500;}
-.history-item .info small { color: #adb5bd; }
+.history-item .info p { font-size: 0.95em; color: #f8f9fa; margin-bottom: 3px; font-weight: 500;}
+.history-item .info small { color: #adb5bd; font-size: 0.8em; }
 .history-item .arrow { color: #6c757d; font-size: 1.2em; }
 
+.mini-history { margin-bottom: 15px; }
+.view-all-history { margin-top: 0; margin-bottom: 10px; }
 
-/* --- Leaderboard Screen Specific --- */
-.leaderboard-list { list-style: none; padding: 15px; }
+
+/* === Leaderboard Screen Specific === */
+.leaderboard-list { list-style: none; padding: 0 0 15px 0; }
 .leaderboard-item {
-    display: flex; align-items: center; padding: 12px 5px;
-    border-bottom: 1px solid #495057;
+    display: flex; align-items: center; padding: 12px 5px; border-bottom: 1px solid #495057;
 }
 .leaderboard-item:last-child { border-bottom: none; }
 
-.leaderboard-item .rank {
-    width: 45px; font-weight: bold; font-size: 1.1em;
-    color: #adb5bd; text-align: center;
-}
-.leaderboard-item.rank-1 .rank { color: #ffc107; } /* Gold */
-.leaderboard-item.rank-2 .rank { color: #ced4da; } /* Silver */
-.leaderboard-item.rank-3 .rank { color: #cd7f32; } /* Bronze */
+.leaderboard-item .rank { width: 45px; font-weight: bold; font-size: 1.1em; color: #adb5bd; text-align: center; }
+.leaderboard-item.rank-1 .rank { color: #ffc107; }
+.leaderboard-item.rank-2 .rank { color: #ced4da; }
+.leaderboard-item.rank-3 .rank { color: #cd7f32; }
 
 .leaderboard-item .avatar {
-    width: 40px; height: 40px; background-color: #495057;
-    border-radius: 50%; display: inline-flex; justify-content: center;
-    align-items: center; font-size: 1.2em; margin: 0 12px; color: #adb5bd;
+    width: 40px; height: 40px; background-color: #495057; border-radius: 50%;
+    display: inline-flex; justify-content: center; align-items: center;
+    font-size: 1.2em; margin: 0 12px; color: #adb5bd; font-weight: bold;
 }
-.leaderboard-item .name {
-    flex-grow: 1; font-size: 1em; color: #f8f9fa; font-weight: 500;
-}
-.leaderboard-item .score {
-    font-weight: 600; color: #fff; font-size: 1.1em;
-}
+.leaderboard-item .name { flex-grow: 1; font-size: 1em; color: #f8f9fa; font-weight: 500; }
+.leaderboard-item .score { font-weight: 600; color: #fff; font-size: 1.1em; }
 .leaderboard-item.current-user {
-    background-color: rgba(255, 193, 7, 0.1); /* Slight Orange Highlight */
-    border-left: 3px solid #ffc107;
+    background-color: rgba(255, 193, 7, 0.1); border-left: 3px solid #ffc107;
     margin-left: -15px; margin-right: -15px; padding-left: 12px;
 }
 .leaderboard-item.current-user .name { font-weight: bold; }
 
-/* --- Profile Screen Specific --- */
-.profile-header { text-align: center; margin-bottom: 30px; }
+
+/* === Community Screen Specific === */
+#community-screen .app-header { margin-bottom: 0; }
+.feed-list { list-style: none; padding: 0 0 15px 0; }
+.feed-post {
+    background-color: #343a40; border-radius: 8px; margin-top: 15px; /* Use margin-top */
+    border: 1px solid #495057; overflow: hidden;
+}
+.post-header { display: flex; align-items: center; padding: 10px 15px; }
+.user-avatar {
+    width: 38px; height: 38px; background-color: #6c757d; border-radius: 50%;
+    display: inline-flex; justify-content: center; align-items: center;
+    font-size: 1.1em; margin-right: 10px; color: #f8f9fa; font-weight: bold;
+}
+.user-info { flex-grow: 1; }
+.user-name { font-weight: 600; color: #f8f9fa; display: block; font-size: 0.95em;}
+.post-timestamp { font-size: 0.75em; color: #adb5bd; }
+.post-options { color: #adb5bd; cursor: pointer; font-size: 1.2em; padding: 5px;}
+
+.post-content { padding: 0 15px 10px 15px; }
+.post-content p { font-size: 0.95em; color: #e9ecef; margin-bottom: 12px;}
+
+.achievement-highlight {
+    background-color: #495057; border-radius: 6px; padding: 10px 12px; margin-top: 10px;
+    font-size: 0.9em; display: flex; align-items: center; border-left: 4px solid #ffc107;
+}
+.achievement-highlight.streak { border-left-color: #ffc107; }
+.achievement-highlight.workout { border-left-color: #0d6efd; }
+.achievement-highlight.pr { border-left-color: #198754; }
+.achievement-highlight.badge { border-left-color: #6f42c1; }
+.achievement-highlight span.highlight-value { font-weight: bold; color: #fff; margin-left: 5px; }
+
+.post-image { margin-top: 10px; }
+.post-image img { display: block; max-width: 100%; height: auto; border-radius: 4px; }
+
+.post-actions {
+    display: flex; justify-content: space-around; border-top: 1px solid #495057; padding: 5px 0;
+}
+.action-btn {
+    background: none; border: none; color: #adb5bd; cursor: pointer;
+    font-size: 0.85em; font-weight: 500; padding: 8px 5px; flex: 1; text-align: center;
+    transition: background-color 0.2s ease;
+}
+.action-btn:hover { background-color: #495057; }
+.action-btn .count { color: #6c757d; margin-left: 3px; font-size: 0.9em;}
+.action-btn.like.liked { color: #0d6efd; font-weight: bold; }
+
+
+/* === Profile Screen Specific === */
+.profile-header { text-align: center; margin-bottom: 30px; padding-top: 10px;}
 .profile-avatar {
-    width: 90px; height: 90px; background-color: #495057;
-    border-radius: 50%; margin: 0 auto 12px auto; display: flex;
-    justify-content: center; align-items: center; font-size: 3em;
-    color: #adb5bd; border: 2px solid #6c757d;
+    width: 90px; height: 90px; background-color: #495057; border-radius: 50%;
+    margin: 0 auto 12px auto; display: flex; justify-content: center; align-items: center;
+    font-size: 3em; color: #adb5bd; border: 2px solid #6c757d;
 }
 .profile-header h2 { font-size: 1.5em; color: #f8f9fa; margin-bottom: 5px; font-weight: 600;}
 .profile-header p { font-size: 0.9em; color: #adb5bd; }
 
 .profile-section { margin-bottom: 25px; }
 .profile-section h3 {
-    font-size: 0.9em; color: #adb5bd; text-transform: uppercase;
-    margin-bottom: 10px; border-bottom: 1px solid #495057;
-    padding-bottom: 6px; font-weight: 600;
+    font-size: 0.9em; color: #adb5bd; text-transform: uppercase; margin-bottom: 10px;
+    border-bottom: 1px solid #495057; padding-bottom: 6px; font-weight: 600;
 }
 .profile-item {
-    display: flex; align-items: center; padding: 14px 5px;
-    font-size: 1em; color: #f8f9fa; border-bottom: 1px solid #343a40; /* Darker separator */
-    cursor: pointer; transition: background-color 0.2s ease;
+    display: flex; align-items: center; padding: 14px 5px; font-size: 1em;
+    color: #f8f9fa; border-bottom: 1px solid #343a40; cursor: pointer; transition: background-color 0.2s ease;
 }
 .profile-item:last-child { border-bottom: none; }
 .profile-item:hover { background-color: #343a40; }
 .profile-item span:first-child { /* Icon */
-    font-size: 1.3em; margin-right: 18px; width: 25px; text-align: center;
-    color: #adb5bd;
+    font-size: 1.3em; margin-right: 18px; width: 25px; text-align: center; color: #adb5bd;
 }
-.profile-item span:nth-child(2) { /* Label */
-    flex-grow: 1; font-weight: 500;
-}
+.profile-item span:nth-child(2) { /* Label */ flex-grow: 1; font-weight: 500; }
 .profile-item .value { color: #adb5bd; font-weight: normal; }
 .profile-item .arrow { color: #6c757d; font-size: 1.1em; }
 .profile-item.logout span:nth-child(2) { color: #dc3545; } /* Red */
 .profile-item.logout span:first-child { color: #dc3545; }
 
 
-/* --- Bottom Navigation --- */
+/* === Bottom Navigation === */
 .bottom-nav {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 65px; background-color: #343a40; /* Lighter gray nav */
-    border-top: 1px solid #495057; display: flex;
-    justify-content: space-around; align-items: center; padding-bottom: 5px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 65px;
+    background-color: #343a40; border-top: 1px solid #495057;
+    display: flex; justify-content: space-around; align-items: stretch;
     z-index: 10;
 }
 
 .nav-item {
-    display: flex; flex-direction: column; align-items: center;
-    color: #adb5bd; /* Inactive color - Lighter gray */
-    text-decoration: none; flex: 1; padding-top: 5px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #adb5bd; text-decoration: none; flex: 1; padding: 5px 0;
     transition: color 0.2s ease;
 }
 
-.nav-item .icon { font-size: 1.6em; margin-bottom: 4px; }
-.nav-item .label { font-size: 0.7em; }
+.nav-item .icon { font-size: 1.6em; margin-bottom: 2px; }
+.nav-item .label { font-size: 0.7em; line-height: 1.2; }
 
-.nav-item.active {
-    color: #ffc107; /* Orange accent for active */
-}
+.nav-item.active { color: #ffc107; }
 .nav-item.active .label { font-weight: bold; }

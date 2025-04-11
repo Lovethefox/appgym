@@ -15,52 +15,38 @@
             <!-- ================== Home Screen ================== -->
             <div id="home-screen" class="screen active">
                 <header class="app-header">
-                    <span class="header-icon">☰</span> <!-- Hamburger Menu -->
-                    <h1>Hello Hường!</h1> <!-- Updated Name -->
-                    <span class="header-icon profile-icon">👤</span> <!-- Profile Icon -->
+                    <span class="header-icon">☰</span>
+                    <h1>Hello Hường!</h1>
+                    <span class="header-icon profile-icon">👤</span>
                 </header>
 
                 <!-- Calendar Section -->
                 <div class="card calendar-card">
                     <h2>Calendar</h2>
-                    <div class="calendar-weeks">
-                        <span>Week 1</span>
-                        <span>Week 2</span>
-                        <span class="active">Week 3</span>
-                        <span>Week 4</span>
-                        <span>...</span>
-                    </div>
+                    <div class="calendar-weeks"> <span>Week 1</span> <span>Week 2</span> <span class="active">Week 3</span> <span>Week 4</span> <span>...</span> </div>
                     <div class="calendar-days">
-                        <div class="day done"><small>Mon</small><span>✓</span></div>
-                        <div class="day"><small>Tue</small><span>🗓️</span></div>
-                        <div class="day done"><small>Wed</small><span>✓</span></div>
-                        <div class="day"><small>Thu</small><span>🗓️</span></div>
-                        <div class="day"><small>Fri</small><span>🗓️</span></div>
-                        <div class="day"><small>Sat</small><span>🏋️</span></div>
-                        <div class="day"><small>Sun</small><span>🗓️</span></div>
+                        <div class="day done"><small>Mon</small><span>✓</span></div> <div class="day"><small>Tue</small><span>🗓️</span></div> <div class="day done"><small>Wed</small><span>✓</span></div> <div class="day"><small>Thu</small><span>🗓️</span></div> <div class="day"><small>Fri</small><span>🗓️</span></div> <div class="day"><small>Sat</small><span>🏋️</span></div> <div class="day"><small>Sun</small><span>🗓️</span></div>
                     </div>
+                </div>
+
+                <!-- Calories Today Section -->
+                <div class="card calorie-card home-calories">
+                    <h2>Today's Calories</h2>
+                    <div class="calorie-display">
+                        <span class="current-calories">🔥 350 Kcal</span>
+                        <span class="goal">/ 500 Kcal Goal</span>
+                    </div>
+                    <progress value="70" max="100"></progress>
                 </div>
 
                 <!-- Exercise Section -->
                  <div class="exercise-section">
                     <h2>Exercise</h2>
                      <div class="exercise-category-list">
-                        <div class="exercise-category-card selected" style="background-color: #ff8c00;">
-                            <span class="cat-icon">💪</span>
-                            <div class="cat-info"> <span class="cat-title">Chest</span> <span class="cat-rating">★★★★★</span> </div>
-                        </div>
-                        <div class="exercise-category-card" style="background-color: #0056b3;">
-                            <span class="cat-icon">🏋️</span>
-                             <div class="cat-info"> <span class="cat-title">Shoulder</span> <span class="cat-rating">★★★★☆</span> </div>
-                        </div>
-                        <div class="exercise-category-card" style="background-color: #5a6268;">
-                             <span class="cat-icon">🤸</span>
-                            <div class="cat-info"> <span class="cat-title">Abs</span> <span class="cat-rating">★★★★★</span> </div>
-                        </div>
-                        <div class="exercise-category-card" style="background-color: #1e7e34;">
-                             <span class="cat-icon">🦵</span>
-                            <div class="cat-info"> <span class="cat-title">Legs</span> <span class="cat-rating">★★★★☆</span> </div>
-                        </div>
+                        <div class="exercise-category-card selected" style="background-color: #ff8c00;"> <span class="cat-icon">💪</span> <div class="cat-info"> <span class="cat-title">Chest</span> <span class="cat-rating">★★★★★</span> </div> </div>
+                        <div class="exercise-category-card" style="background-color: #0056b3;"> <span class="cat-icon">🏋️</span> <div class="cat-info"> <span class="cat-title">Shoulder</span> <span class="cat-rating">★★★★☆</span> </div> </div>
+                        <div class="exercise-category-card" style="background-color: #5a6268;"> <span class="cat-icon">🤸</span> <div class="cat-info"> <span class="cat-title">Abs</span> <span class="cat-rating">★★★★★</span> </div> </div>
+                        <div class="exercise-category-card" style="background-color: #1e7e34;"> <span class="cat-icon">🦵</span> <div class="cat-info"> <span class="cat-title">Legs</span> <span class="cat-rating">★★★★☆</span> </div> </div>
                      </div>
                 </div>
 
@@ -71,10 +57,12 @@
             <div id="workout-screen" class="screen">
                 <div class="live-camera-view">
                     <img src="squat_image.jpg" alt="Live camera feed showing user performing exercise" class="camera-feed-image">
+                    <!-- AI Skeleton Overlay -->
                     <div class="skeleton-overlay">
                         <div class="joint" style="top: 35%; left: 52%;"></div> <div class="joint correct" style="top: 50%; left: 48%;"></div> <div class="joint correct" style="top: 51%; left: 58%;"></div> <div class="joint incorrect" style="top: 65%; left: 45%;"></div> <div class="joint incorrect" style="top: 66%; left: 61%;"></div> <div class="joint" style="top: 85%; left: 43%;"></div> <div class="joint" style="top: 84%; left: 63%;"></div>
                     </div>
                 </div>
+                <!-- Controls Overlay -->
                  <div class="workout-overlay">
                      <header class="workout-header"> <span class="back-arrow">‹</span> </header>
                      <div class="workout-info-controls">
@@ -108,34 +96,56 @@
              <div id="progress-screen" class="screen">
                  <header class="app-header fixed"> <h1>Progress Tracking</h1> </header>
                  <div class="tab-buttons"> <button class="tab-btn active" data-target="overview-tab">Overview</button> <button class="tab-btn" data-target="history-tab">History</button> </div>
+                 <!-- Overview Tab Content -->
                  <div id="overview-tab" class="tab-content active">
-                     <div class="stats-grid">
+                     <div class="stats-grid four-cols">
                          <div class="stat-card"> <span>🏋️</span> <span class="value">55</span> <small>Workouts</small> </div>
                          <div class="stat-card"> <span>⏱️</span> <span class="value">42.5 h</span> <small>Total Hours</small> </div>
-                          <div class="stat-card"> <span class="icon streak-icon">🔥</span> <span class="value">15</span> <small>Current Streak</small> </div>
-                          <div class="stat-card"> <span>⭐</span> <span class="value">25</span> <small>Record Streak</small> </div>
+                         <div class="stat-card"> <span class="icon streak-icon">🔥</span> <span class="value">15</span> <small>Current Streak</small> </div>
+                         <div class="stat-card"> <span class="icon calorie-icon">🔥</span> <span class="value">25,500</span> <small>Total Kcal</small> </div>
                      </div>
                      <h2>Calories This Week</h2>
-                     <div class="chart-placeholder"> [Bar Chart: Calories Burned] </div>
+                     <!-- Simulated Bar Chart -->
+                     <div class="chart-container weekly-calorie-chart">
+                         <div class="chart-bar-wrapper"> <div class="chart-value-label">410</div> <div class="chart-bar" style="height: calc(150px * (410 / 550));"></div> <div class="chart-label">Mon</div> </div>
+                         <div class="chart-bar-wrapper"> <div class="chart-value-label">0</div> <div class="chart-bar" style="height: calc(150px * (0 / 550)); background-color: #495057;"></div> <div class="chart-label">Tue</div> </div>
+                         <div class="chart-bar-wrapper"> <div class="chart-value-label">380</div> <div class="chart-bar" style="height: calc(150px * (380 / 550));"></div> <div class="chart-label">Wed</div> </div>
+                         <div class="chart-bar-wrapper"> <div class="chart-value-label">450</div> <div class="chart-bar" style="height: calc(150px * (450 / 550));"></div> <div class="chart-label">Thu</div> </div>
+                         <div class="chart-bar-wrapper"> <div class="chart-value-label">0</div> <div class="chart-bar" style="height: calc(150px * (0 / 550)); background-color: #495057;"></div> <div class="chart-label">Fri</div> </div>
+                         <div class="chart-bar-wrapper"> <div class="chart-value-label">550</div> <div class="chart-bar" style="height: calc(150px * (550 / 550));"></div> <div class="chart-label">Sat</div> </div>
+                         <div class="chart-bar-wrapper"> <div class="chart-value-label">300</div> <div class="chart-bar" style="height: calc(150px * (300 / 550));"></div> <div class="chart-label">Sun</div> </div>
+                     </div>
+                     <!-- Mini History -->
+                     <h2>Workout History (Last 7 Days)</h2>
+                     <ul class="history-list mini-history">
+                         <li class="history-item"> <span class="date">🗓️ Jul 25</span> <div class="info"> <p>Leg Day</p> <small>45 min - 410 Kcal</small> </div> <span class="arrow">›</span> </li>
+                         <li class="history-item"> <span class="date">🗓️ Jul 23</span> <div class="info"> <p>Chest</p> <small>40 min - 380 Kcal</small> </div> <span class="arrow">›</span> </li>
+                         <li class="history-item"> <span class="date">🗓️ Jul 22</span> <div class="info"> <p>Back</p> <small>50 min - 450 Kcal</small> </div> <span class="arrow">›</span> </li>
+                     </ul>
+                      <button class="btn btn-secondary view-all-history">View Full History</button>
                  </div>
+                 <!-- History Tab Content -->
                  <div id="history-tab" class="tab-content">
                      <ul class="history-list">
                          <li class="history-item"> <span class="date">🗓️ Jul 25</span> <div class="info"> <p>Leg Day Workout</p> <small>45 min - 410 Kcal</small> </div> <span class="arrow">›</span> </li>
-                          <li class="history-item"> <span class="date">🗓️ Jul 23</span> <div class="info"> <p>Chest & Triceps</p> <small>40 min - 380 Kcal</small> </div> <span class="arrow">›</span> </li>
+                         <li class="history-item"> <span class="date">🗓️ Jul 23</span> <div class="info"> <p>Chest & Triceps</p> <small>40 min - 380 Kcal</small> </div> <span class="arrow">›</span> </li>
+                         <li class="history-item"> <span class="date">🗓️ Jul 22</span> <div class="info"> <p>Back & Biceps</p> <small>50 min - 450 Kcal</small> </div> <span class="arrow">›</span> </li>
+                         <li class="history-item"> <span class="date">🗓️ Jul 20</span> <div class="info"> <p>Shoulder Press Focus</p> <small>35 min - 320 Kcal</small> </div> <span class="arrow">›</span> </li>
+                         <li class="history-item"> <span class="date">🗓️ Jul 19</span> <div class="info"> <p>Full Body HIIT</p> <small>30 min - 500 Kcal</small> </div> <span class="arrow">›</span> </li>
+                         <!-- Add more history -->
                      </ul>
                  </div>
              </div>
 
             <!-- ================== Leaderboard Screen ================== -->
              <div id="leaderboard-screen" class="screen">
-                  <header class="app-header fixed"> <h1>Leaderboard</h1> <div class="header-icons"> <select class="filter-select"> <option>By Streak</option> <option>By Total Time</option> <option>By Total Calories</option> </select> </div> </header>
+                  <header class="app-header fixed"> <h1>Leaderboard</h1> <div class="header-icons"> <select class="filter-select" id="leaderboard-filter"> <option value="streak" selected>By Streak</option> <option value="time">By Total Time</option> <option value="calories">By Total Calories</option> </select> </div> </header>
                   <ul class="leaderboard-list">
-                     <li class="leaderboard-item rank-1"> <span class="rank">#1 🏆</span> <span class="avatar">👤</span> <span class="name">Nhật</span> <span class="score">48 days</span> </li> <!-- Updated Name -->
-                     <li class="leaderboard-item rank-2"> <span class="rank">#2</span> <span class="avatar">👤</span> <span class="name">Hội</span> <span class="score">45 days</span> </li> <!-- Updated Name -->
-                      <li class="leaderboard-item rank-3"> <span class="rank">#3</span> <span class="avatar">👤</span> <span class="name">Nguyên</span> <span class="score">41 days</span> </li> <!-- Updated Name -->
-                      <li class="leaderboard-item current-user"> <span class="rank">#4</span> <span class="avatar">👤</span> <span class="name">Hường (You)</span> <span class="score">39 days</span> </li> <!-- Updated Name -->
-                      <li class="leaderboard-item"> <span class="rank">#5</span> <span class="avatar">👤</span> <span class="name">Mai</span> <span class="score">35 days</span> </li> <!-- Updated Name -->
-                      <!-- Add more users if needed -->
+                     <li class="leaderboard-item rank-1"> <span class="rank">#1 🏆</span> <span class="avatar">👤</span> <span class="name">Nhật</span> <span class="score" data-streak="48 days" data-time="55.2 h" data-calories="28500 Kcal">48 days</span> </li>
+                     <li class="leaderboard-item rank-2"> <span class="rank">#2</span> <span class="avatar">👤</span> <span class="name">Hội</span> <span class="score" data-streak="45 days" data-time="51.0 h" data-calories="27100 Kcal">45 days</span> </li>
+                     <li class="leaderboard-item rank-3"> <span class="rank">#3</span> <span class="avatar">👤</span> <span class="name">Nguyên</span> <span class="score" data-streak="41 days" data-time="48.5 h" data-calories="26000 Kcal">41 days</span> </li>
+                     <li class="leaderboard-item current-user"> <span class="rank">#4</span> <span class="avatar">👤</span> <span class="name">Hường (You)</span> <span class="score" data-streak="39 days" data-time="42.5 h" data-calories="25500 Kcal">39 days</span> </li>
+                     <li class="leaderboard-item"> <span class="rank">#5</span> <span class="avatar">👤</span> <span class="name">Mai</span> <span class="score" data-streak="35 days" data-time="40.1 h" data-calories="24800 Kcal">35 days</span> </li>
                  </ul>
              </div>
 
@@ -143,109 +153,35 @@
              <div id="community-screen" class="screen">
                 <header class="app-header fixed"> <h1>Community Feed</h1> <span class="header-icon post-icon">+</span> </header>
                 <ul class="feed-list">
-                    <!-- Post Example 1: Streak Achievement (Hường) -->
+                    <!-- Post 1: Hường (Streak) -->
                     <li class="feed-post">
-                        <div class="post-header">
-                            <span class="user-avatar">👤</span>
-                            <div class="user-info">
-                                <span class="user-name">Hường (You)</span> <!-- Updated Name -->
-                                <span class="post-timestamp">2 hours ago</span>
-                            </div>
-                            <span class="post-options">...</span>
-                        </div>
-                        <div class="post-content">
-                            <p>Feeling motivated! Kept the streak going strong. 💪</p>
-                            <div class="achievement-highlight streak"> 🔥 Reached <span class="highlight-value">15 Day</span> Streak! </div>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like">👍 Like <span class="count">(12)</span></button>
-                            <button class="action-btn comment">💬 Comment <span class="count">(3)</span></button>
-                            <button class="action-btn share">↪ Share</button>
-                        </div>
+                        <div class="post-header"> <span class="user-avatar">👤</span> <div class="user-info"> <span class="user-name">Hường (You)</span> <span class="post-timestamp">2 hours ago</span> </div> <span class="post-options">...</span> </div>
+                        <div class="post-content"> <p>Feeling motivated! Kept the streak going strong. 💪</p> <div class="achievement-highlight streak"> 🔥 Reached <span class="highlight-value">15 Day</span> Streak! </div> </div>
+                        <div class="post-actions"> <button class="action-btn like">👍 Like <span class="count">(12)</span></button> <button class="action-btn comment">💬 Comment <span class="count">(3)</span></button> <button class="action-btn share">↪ Share</button> </div>
                     </li>
-
-                    <!-- Post Example 2: Workout Completion (Nhật) -->
+                    <!-- Post 2: Nhật (Workout) -->
                     <li class="feed-post">
-                        <div class="post-header">
-                            <span class="user-avatar" style="background-color: #0d6efd;">N</span> <!-- Updated Avatar -->
-                            <div class="user-info">
-                                <span class="user-name">Nhật</span> <!-- Updated Name -->
-                                <span class="post-timestamp">5 hours ago</span>
-                            </div>
-                             <span class="post-options">...</span>
-                        </div>
-                        <div class="post-content">
-                            <p>That Leg Day Annihilation workout was intense, but crushed it! Anyone else try it?</p>
-                            <div class="achievement-highlight workout"> 🏋️ Completed <span class="highlight-value">Leg Day Annihilation</span> (45 min, 410 Kcal) </div>
-                        </div>
-                         <div class="post-actions">
-                            <button class="action-btn like">👍 Like <span class="count">(25)</span></button>
-                            <button class="action-btn comment">💬 Comment <span class="count">(8)</span></button>
-                            <button class="action-btn share">↪ Share</button>
-                        </div>
+                        <div class="post-header"> <span class="user-avatar" style="background-color: #0d6efd;">N</span> <div class="user-info"> <span class="user-name">Nhật</span> <span class="post-timestamp">5 hours ago</span> </div> <span class="post-options">...</span> </div>
+                        <div class="post-content"> <p>That Leg Day Annihilation workout was intense, but crushed it! Anyone else try it?</p> <div class="achievement-highlight workout"> 🏋️ Completed <span class="highlight-value">Leg Day Annihilation</span> (45 min, 410 Kcal) </div> </div>
+                         <div class="post-actions"> <button class="action-btn like">👍 Like <span class="count">(25)</span></button> <button class="action-btn comment">💬 Comment <span class="count">(8)</span></button> <button class="action-btn share">↪ Share</button> </div>
                     </li>
-
-                     <!-- Post Example 3: PR Achieved + Image (Hội) -->
+                    <!-- Post 3: Hội (PR + Image) -->
                     <li class="feed-post">
-                        <div class="post-header">
-                            <span class="user-avatar" style="background-color: #198754;">H</span> <!-- Updated Avatar -->
-                            <div class="user-info">
-                                <span class="user-name">Hội</span> <!-- Updated Name -->
-                                <span class="post-timestamp">Yesterday</span>
-                            </div>
-                             <span class="post-options">...</span>
-                        </div>
-                        <div class="post-content">
-                            <p>Finally hit that 100kg squat! So hyped! Consistency pays off.</p>
-                             <div class="achievement-highlight pr"> 🏆 New <span class="highlight-value">Squat PR: 100kg</span>! </div>
-                            <div class="post-image"> <img src="gym_selfie_placeholder.jpg" alt="User C after hitting PR"> </div>
-                        </div>
-                         <div class="post-actions">
-                            <button class="action-btn like liked">👍 Liked <span class="count">(41)</span></button>
-                            <button class="action-btn comment">💬 Comment <span class="count">(15)</span></button>
-                            <button class="action-btn share">↪ Share</button>
-                        </div>
+                        <div class="post-header"> <span class="user-avatar" style="background-color: #198754;">H</span> <div class="user-info"> <span class="user-name">Hội</span> <span class="post-timestamp">Yesterday</span> </div> <span class="post-options">...</span> </div>
+                        <div class="post-content"> <p>Finally hit that 100kg squat! So hyped! Consistency pays off.</p> <div class="achievement-highlight pr"> 🏆 New <span class="highlight-value">Squat PR: 100kg</span>! </div> <div class="post-image"> <img src="gym_selfie_placeholder.jpg" alt="User C after hitting PR"> </div> </div>
+                         <div class="post-actions"> <button class="action-btn like liked">👍 Liked <span class="count">(41)</span></button> <button class="action-btn comment">💬 Comment <span class="count">(15)</span></button> <button class="action-btn share">↪ Share</button> </div>
                     </li>
-
-                     <!-- Post Example 4: Badge Unlocked (Nguyên) -->
+                    <!-- Post 4: Nguyên (Badge) -->
                     <li class="feed-post">
-                        <div class="post-header">
-                            <span class="user-avatar" style="background-color: #dc3545;">N</span> <!-- Updated Avatar -->
-                            <div class="user-info">
-                                <span class="user-name">Nguyên</span> <!-- Updated Name -->
-                                <span class="post-timestamp">3 days ago</span>
-                            </div>
-                            <span class="post-options">...</span>
-                        </div>
-                        <div class="post-content">
-                            <p>Just unlocked a new badge!</p>
-                             <div class="achievement-highlight badge"> 🏅 Unlocked <span class="highlight-value">'Consistent Challenger'</span> Badge! </div>
-                        </div>
-                         <div class="post-actions">
-                            <button class="action-btn like">👍 Like <span class="count">(18)</span></button>
-                            <button class="action-btn comment">💬 Comment <span class="count">(2)</span></button>
-                            <button class="action-btn share">↪ Share</button>
-                        </div>
+                        <div class="post-header"> <span class="user-avatar" style="background-color: #dc3545;">N</span> <div class="user-info"> <span class="user-name">Nguyên</span> <span class="post-timestamp">3 days ago</span> </div> <span class="post-options">...</span> </div>
+                        <div class="post-content"> <p>Just unlocked a new badge!</p> <div class="achievement-highlight badge"> 🏅 Unlocked <span class="highlight-value">'Consistent Challenger'</span> Badge! </div> </div>
+                         <div class="post-actions"> <button class="action-btn like">👍 Like <span class="count">(18)</span></button> <button class="action-btn comment">💬 Comment <span class="count">(2)</span></button> <button class="action-btn share">↪ Share</button> </div>
                     </li>
-                     <!-- Post Example 5: General Post (Mai) -->
+                     <!-- Post 5: Mai (General) -->
                     <li class="feed-post">
-                        <div class="post-header">
-                            <span class="user-avatar" style="background-color: #ffc107; color: #333;">M</span> <!-- Updated Avatar -->
-                            <div class="user-info">
-                                <span class="user-name">Mai</span> <!-- Updated Name -->
-                                <span class="post-timestamp">4 days ago</span>
-                            </div>
-                            <span class="post-options">...</span>
-                        </div>
-                        <div class="post-content">
-                            <p>Any recommendations for a good pre-workout snack?</p>
-                            <!-- No achievement highlight for general posts -->
-                        </div>
-                         <div class="post-actions">
-                            <button class="action-btn like">👍 Like <span class="count">(5)</span></button>
-                            <button class="action-btn comment">💬 Comment <span class="count">(10)</span></button>
-                            <button class="action-btn share">↪ Share</button>
-                        </div>
+                        <div class="post-header"> <span class="user-avatar" style="background-color: #ffc107; color: #333;">M</span> <div class="user-info"> <span class="user-name">Mai</span> <span class="post-timestamp">4 days ago</span> </div> <span class="post-options">...</span> </div>
+                        <div class="post-content"> <p>Any recommendations for a good pre-workout snack?</p> </div>
+                         <div class="post-actions"> <button class="action-btn like">👍 Like <span class="count">(5)</span></button> <button class="action-btn comment">💬 Comment <span class="count">(10)</span></button> <button class="action-btn share">↪ Share</button> </div>
                     </li>
                 </ul>
              </div>
@@ -253,11 +189,7 @@
              <!-- ================== Profile Screen ================== -->
              <div id="profile-screen" class="screen">
                   <header class="app-header"> <h1>Profile</h1> <div class="header-icons"> <span>⚙️</span> </div> </header>
-                 <div class="profile-header">
-                     <div class="profile-avatar">👤</div>
-                     <h2>Hường</h2> <!-- Updated Name -->
-                     <p>huong@email.com</p> <!-- Assuming email matches -->
-                 </div>
+                 <div class="profile-header"> <div class="profile-avatar">👤</div> <h2>Hường</h2> <p>huong@email.com</p> </div>
                  <div class="profile-section">
                      <h3>Details</h3>
                      <div class="profile-item"> <span>🎯</span> <span>Goal</span> <span class="value">Build Muscle</span> </div>
@@ -279,7 +211,7 @@
         <nav class="bottom-nav">
             <a href="#home-screen" class="nav-item active" data-target="home-screen"> <span class="icon">🏠</span> <span class="label">Home</span> </a>
             <a href="#library-screen" class="nav-item" data-target="library-screen"> <span class="icon">🏋️</span> <span class="label">Exercises</span> </a>
-            <a href="#community-screen" class="nav-item" data-target="community-screen"> <span class="icon">👥</span> <span class="label">Community</span> </a> <!-- Added Community Nav -->
+            <a href="#community-screen" class="nav-item" data-target="community-screen"> <span class="icon">👥</span> <span class="label">Community</span> </a>
             <a href="#progress-screen" class="nav-item" data-target="progress-screen"> <span class="icon">📊</span> <span class="label">Progress</span> </a>
             <a href="#leaderboard-screen" class="nav-item" data-target="leaderboard-screen"> <span class="icon">🏆</span> <span class="label">Leaders</span> </a>
             <a href="#profile-screen" class="nav-item" data-target="profile-screen"> <span class="icon">👤</span> <span class="label">Profile</span> </a>
