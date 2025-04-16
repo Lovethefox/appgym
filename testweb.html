@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân tích bài tập theo thời gian thực</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .video-container {
+            width: 48%;
+            min-width: 400px;
+        }
+        .info-container {
+            width: 48%;
+            min-width: 400px;
+        }
+        video, #processedVideo {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .stats {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.stop {
+            background-color: #f44336;
+        }
+        button.stop:hover {
+            background-color: #d32f2f;
+        }
+        select {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .error-list {
+            color: #f44336;
+        }
+        .upload-section {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phân tích bài tập theo thời gian thực</h1>
+    
+    <div class="container">
+        <div class="video-container">
+            <h2>Webcam</h2>
+            <video id="webcam" autoplay playsinline></video>
+            
+            <div class="controls">
+                <select id="exerciseType">
+                    <option value="squat">Squat</option>
+                    <option value="plank">Plank</option>
+                    <option value="pushup">Push-up</option>
+                    <option value="lunges">Lunges</option>
+                </select>
+                <button id="startBtn">Bắt đầu phân tích</button>
+                <button id="stopBtn" class="stop" disabled>Dừng</button>
+            </div>
+        </div>
+        
+        <div class="video-container">
+            <h2>Video đã phân tích</h2>
+            <img id="processedVideo" src="" alt="Đang chờ phân tích...">
+            
+            <div class="stats">
+                <h3>Thống kê</h3>
+                <p><strong>Trạng thái:</strong> <span id="status">Chưa bắt đầu</span></p>
+                <p><strong>Số lần thực hiện:</strong> <span id="repCount">0</span></p>
+                <h4>Lỗi phát hiện:</h4>
+                <ul id="errors" class="error-list"></ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="upload-section">
+        <h2>Upload video để phân tích</h2>
+        <input type="file" id="videoFile" accept="video/*">
+        <button id="uploadBtn">Upload</button>
+        <div id="uploadResult"></div>
+    </div>
+
+    <script>
+        // Các biến toàn cục
+        let websocket = null;
+        let videoStream = null;
+        let canvas = document.createElement('canvas');
+        let ctx = canvas.getContext('2d');
+        let isStreaming = false;
+        let animationFrameId = null;
+        
+        // Phần tử DOM
+        const webcamVideo = document.getElementById('webcam');
+        const processedVideo = document.getElementById('processedVideo');
+        const exerciseSelect = document.getElementById('exerciseType');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const statusElement = document.getElementById('status');
+        const repCountElement = document.getElementById('repCount');
+        const errorsElement = document.getElementById('errors');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const videoFileInput = document.getElementById('videoFile');
+        const uploadResultElement = document.getElementById('uploadResult');
+        
+        // Khởi tạo WebSocket
+        function initWebSocket(exerciseType) {
+            const wsURL = `wss://caai.s4h.edu.vn/${exerciseType}`;
+            websocket = new WebSocket(wsURL);
+            
+            websocket.onopen = function() {
+                console.log(`WebSocket kết nối đã được thiết lập cho ${exerciseType}`);
+                statusElement.textContent = 'Đã kết nối';
+            };
+            
+            websocket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                console.log('Nhận dữ liệu:', data);
+                
+                if (data.processed_frame) {
+                    processedVideo.src = data.processed_frame;
+                }
+                
+                if (data.status) {
+                    statusElement.textContent = data.status;
+                }
+                
+                if (data.rep_count !== undefined) {
+                    repCountElement.textContent = data.rep_count;
+                }
+                
+                // Hiển thị lỗi
+                errorsElement.innerHTML = '';
+                if (data.errors && data.errors.length > 0) {
+                    data.errors.forEach(error => {
+                        const li = document.createElement('li');
+                        li.textContent = error;
+                        errorsElement.appendChild(li);
+                    });
+                }
+            };
+            
+            websocket.onclose = function(event) {
+                if (event.wasClean) {
+                    console.log(`Kết nối đóng sạch, mã=${event.code} lý do=${event.reason}`);
+                } else {
+                    console.log('Kết nối bị ngắt');
+                }
+                statusElement.textContent = 'Đã ngắt kết nối';
+            };
+            
+            websocket.onerror = function(error) {
+                console.error('WebSocket lỗi:', error);
+                statusElement.textContent = 'Lỗi kết nối';
+            };
+        }
+        
+        // Cài đặt webcam
+        async function setupWebcam() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 640, height: 480 },
+                    audio: false 
+                });
+                webcamVideo.srcObject = videoStream;
+                
+                return new Promise((resolve) => {
+                    webcamVideo.onloadedmetadata = () => {
+                        canvas.width = webcamVideo.videoWidth;
+                        canvas.height = webcamVideo.videoHeight;
+                        resolve(true);
+                    };
+                });
+            } catch (error) {
+                console.error('Lỗi truy cập webcam:', error);
+                statusElement.textContent = 'Không thể truy cập webcam';
+                return Promise.resolve(false);
+            }
+        }
+        
+        // Gửi frame từ webcam qua WebSocket
+        function captureAndSendFrame() {
+            if (!isStreaming || !websocket || websocket.readyState !== WebSocket.OPEN) {
+                return;
+            }
+            
+            ctx.drawImage(webcamVideo, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            websocket.send(JSON.stringify({
+                frame: imageData,
+                exercise_type: exerciseSelect.value
+            }));
+            
+            // Yêu cầu frame tiếp theo
+            animationFrameId = requestAnimationFrame(captureAndSendFrame);
+        }
+        
+        // Bắt đầu phân tích
+        async function startAnalysis() {
+            const exerciseType = exerciseSelect.value;
+            
+            // Thiết lập webcam nếu chưa
+            if (!videoStream) {
+                const webcamReady = await setupWebcam();
+                if (!webcamReady) return;
+            }
+            
+            // Khởi tạo WebSocket
+            initWebSocket(exerciseType);
+            
+            // Cập nhật UI
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            exerciseSelect.disabled = true;
+            statusElement.textContent = 'Đang kết nối...';
+            repCountElement.textContent = '0';
+            errorsElement.innerHTML = '';
+            
+            // Đánh dấu đang phân tích
+            isStreaming = true;
+            
+            // Bắt đầu gửi frame
+            websocket.onopen = function() {
+                console.log('WebSocket kết nối đã được thiết lập');
+                statusElement.textContent = 'Đã kết nối';
+                captureAndSendFrame();
+            };
+        }
+        
+        // Dừng phân tích
+        function stopAnalysis() {
+            isStreaming = false;
+            
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            
+            if (websocket) {
+                websocket.close();
+                websocket = null;
+            }
+            
+            // Cập nhật UI
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            exerciseSelect.disabled = false;
+            statusElement.textContent = 'Đã dừng';
+        }
+        
+        // Upload video
+        async function uploadVideo() {
+            const file = videoFileInput.files[0];
+            if (!file) {
+                alert('Vui lòng chọn video để upload');
+                return;
+            }
+            
+            const exerciseType = exerciseSelect.value;
+            const formData = new FormData();
+            formData.append('video', file);
+            formData.append('exercise_type', exerciseType);
+            
+            uploadBtn.disabled = true;
+            uploadResultElement.textContent = 'Đang upload...';
+            
+            try {
+                const response = await fetch('https://caai.s4h.edu.vn/upload-video/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('Upload thành công:', result);
+                
+                // Hiển thị kết quả và link download
+                uploadResultElement.innerHTML = `
+                    <p>Upload thành công!</p>
+                    <p>Filename: ${result.filename}</p>
+                    <button id="downloadBtn">Tải video đã phân tích</button>
+                `;
+                
+                document.getElementById('downloadBtn').addEventListener('click', () => {
+                    const downloadUrl = `https://caai.s4h.edu.vn/download-video/${result.filename}`;
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = result.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+                
+            } catch (error) {
+                console.error('Lỗi khi upload video:', error);
+                uploadResultElement.textContent = `Lỗi: ${error.message}`;
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        }
+        
+        // Gắn sự kiện
+        startBtn.addEventListener('click', startAnalysis);
+        stopBtn.addEventListener('click', stopAnalysis);
+        uploadBtn.addEventListener('click', uploadVideo);
+        
+        // Dọn dẹp khi rời trang
+        window.addEventListener('beforeunload', () => {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            
+            if (websocket) {
+                websocket.close();
+            }
+        });
+    </script>
+</body>
+</html>
