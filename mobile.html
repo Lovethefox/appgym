@@ -389,10 +389,141 @@
             flex-direction: column;
             align-items: center;
         }
+
+        /* FULLSCREEN MODE STYLING */
+        .fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .fullscreen-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .fullscreen-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 20px;
+        }
+
+        .fullscreen-btn {
+            padding: 10px 16px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fullscreen-stats {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .fullscreen-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .fullscreen-stat:last-child {
+            margin-bottom: 0;
+        }
+
+        .fullscreen-btn-fullscreen {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Rotation prompt */
+        .rotate-prompt {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .rotate-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: rotate 2s infinite ease-in-out;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            75% { transform: rotate(90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @media screen and (min-width: 768px) {
+            .fullscreen-btn-fullscreen {
+                display: none;
+            }
+        }
+
+        /* For landscape orientation on mobile */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .app-container {
+                display: none;
+            }
+            
+            #fullscreenContainer.auto-landscape {
+                display: flex;
+            }
+        }
     </style>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
     <div class="app-container">
@@ -460,6 +591,14 @@
                             <span id="connection">Waiting...</span>
                         </div>
                     </div>
+
+                    <!-- Fullscreen button for video -->
+                    <button class="btn btn-primary" onclick="enterFullscreen()" style="margin-top: 12px;">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                        </svg>
+                        Fullscreen Mode
+                    </button>
                 </div>
             </section>
 
@@ -518,239 +657,484 @@
         </div>
     </div>
 
-    <script>
-        let ws;
-        let stream;
-        let videoElement;
-        let canvas;
-        let ctx;
-        let running = false;
-        let sendInterval;
-        let startTime;
-        let durationInterval;
-        let repCount = 0;
+    <!-- Fullscreen container -->
+    <div id="fullscreenContainer" class="fullscreen-mode" style="display: none;">
+        <video id="fullscreenVideo" class="fullscreen-video" autoplay></video>
+        <img id="fullscreenResultView" class="fullscreen-video" style="display:none;">
         
-        // Tab switching
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Deactivate all tab buttons
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Activate selected tab
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            
-            // Activate selected tab button
-            document.querySelectorAll('.tab').forEach(tab => {
-                if (tab.textContent.toLowerCase().includes(tabName)) {
-                    tab.classList.add('active');
-                }
-            });
+        <button class="fullscreen-btn-fullscreen" onclick="exitFullscreen()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 14h6v6M3 21l7-7M10 4v6H4M3 3l7 7M20 10h-6V4M21 3l-7 7M14 20v-6h6M21 21l-7-7"></path>
+            </svg>
+        </button>
+        
+        <div class="fullscreen-stats">
+            <div class="fullscreen-stat">
+                <span>Reps:</span>
+                <span id="fullscreenReps">0</span>
+            </div>
+            <div class="fullscreen-stat">
+                <span>Form:</span>
+                <span id="fullscreenForm">0%</span>
+            </div>
+            <div class="fullscreen-stat">
+                <span>Time:</span>
+                <span id="fullscreenTime">0:00</span>
+            </div>
+            <div class="fullscreen-stat">
+                <span>Status:</span>
+                <span id="fullscreenStatus">Ready</span>
+            </div>
+        </div>
+        
+        <div class="fullscreen-controls">
+            <button class="fullscreen-btn" onclick="stopExerciseFullscreen()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <rect x="9" y="9" width="6" height="6"></rect>
+                </svg>
+                Stop
+            </button>
+        </div>
+    </div>
+
+    <!-- Rotation prompt -->
+    <div class="rotate-prompt" id="rotatePrompt">
+        <div class="rotate-icon">⟳</div>
+        <h2>Rotate Your Device</h2>
+        <p>Please rotate your device to landscape mode for fullscreen video.</p>
+    </div>
+
+    <script>
+       let ws;
+let stream;
+let videoElement;
+let canvas;
+let ctx;
+let running = false;
+let sendInterval;
+let startTime;
+let durationInterval;
+let repCount = 0;
+let isFullscreen = false;
+let isLandscape = false;
+
+// Detect orientation change
+window.addEventListener('orientationchange', handleOrientationChange);
+
+// Check initial orientation
+function checkOrientation() {
+    if (window.matchMedia("(orientation: landscape)").matches) {
+        isLandscape = true;
+        if (running) {
+            enterFullscreen(true);
+        }
+    } else {
+        isLandscape = false;
+        if (isFullscreen && document.getElementById('fullscreenContainer').classList.contains('auto-landscape')) {
+            exitFullscreen();
+        }
+    }
+}
+
+function handleOrientationChange() {
+    setTimeout(checkOrientation, 100); // Small delay to ensure orientation has fully changed
+}
+
+// Tab switching
+function switchTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Deactivate all tab buttons
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Activate selected tab
+    document.getElementById(tabName + 'Tab').classList.add('active');
+    
+    // Activate selected tab button
+    document.querySelectorAll('.tab').forEach(tab => {
+        if (tab.textContent.toLowerCase().includes(tabName)) {
+            tab.classList.add('active');
+        }
+    });
+}
+
+// Set up difficulty button functionality
+document.querySelectorAll('.difficulty-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        this.classList.add('active');
+    });
+});
+
+// Update exercise info when exercise selection changes
+document.getElementById('exercise').addEventListener('change', function() {
+    const exercise = this.value;
+    const infoElement = document.querySelector('.info-text');
+    
+    const exerciseInfo = {
+        'squat': 'Stand with feet shoulder-width apart. Lower your body as if sitting in a chair, keeping knees from extending past your toes. Keep your back straight and chest up. Return to standing position by pushing through your heels.',
+        'plank': 'Start in a prone position, then lift your body using your palms and toes. Keep your body in a straight line from head to heels. Engage your core and don\'t let your hips sag or lift too high.',
+        'pushup': 'Start in a high plank position. Lower your body by bending your elbows until your chest nearly touches the floor. Keep your body straight and engage your core. Push back to the starting position.',
+        'lunges': 'Stand tall, step one foot forward and lower your body until both knees form 90-degree angles. Your front knee should not extend past your toes. Push through your front heel to return to the starting position.',
+        'deadlift': 'Stand with feet shoulder-width apart, slightly bend your knees and lower your hips. Keep your back straight, grip your weight, and lift by pushing your hips forward. Keep the weight close to your body throughout the movement.'
+    };
+    
+    infoElement.textContent = exerciseInfo[exercise] || exerciseInfo['squat'];
+});
+
+// Enter fullscreen mode
+function enterFullscreen(autoTriggered = false) {
+    if (!running) {
+        document.getElementById('rotatePrompt').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('rotatePrompt').style.display = 'none';
+        }, 3000);
+        return;
+    }
+    
+    isFullscreen = true;
+    const fullscreenContainer = document.getElementById('fullscreenContainer');
+    const fullscreenVideo = document.getElementById('fullscreenVideo');
+    
+    if (autoTriggered) {
+        fullscreenContainer.classList.add('auto-landscape');
+    } else {
+        fullscreenContainer.classList.remove('auto-landscape');
+    }
+    
+    // Display fullscreen container
+    fullscreenContainer.style.display = 'flex';
+    
+    // If we have a result view (processed video), show it in fullscreen
+    if (document.getElementById('resultView').style.display !== 'none') {
+        // Create a canvas to display the image data
+        if (!window.fullscreenCanvas) {
+            window.fullscreenCanvas = document.createElement('canvas');
+            window.fullscreenCanvas.width = 640;
+            window.fullscreenCanvas.height = 480;
+            window.fullscreenCtx = window.fullscreenCanvas.getContext('2d');
         }
         
-        // Set up difficulty button functionality
-        document.querySelectorAll('.difficulty-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('.difficulty-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                this.classList.add('active');
-            });
-        });
+        // Update the fullscreen video with the result view frame data
+        updateFullscreenWithResultFrame();
+    } else {
+        // Otherwise show camera feed
+        fullscreenVideo.srcObject = stream;
+    }
+    
+    // Update fullscreen stats
+    updateFullscreenStats();
+    
+    // Try to request fullscreen from browser
+    if (fullscreenContainer.requestFullscreen) {
+        fullscreenContainer.requestFullscreen();
+    } else if (fullscreenContainer.mozRequestFullScreen) {
+        fullscreenContainer.mozRequestFullScreen();
+    } else if (fullscreenContainer.webkitRequestFullscreen) {
+        fullscreenContainer.webkitRequestFullscreen();
+    } else if (fullscreenContainer.msRequestFullscreen) {
+        fullscreenContainer.msRequestFullscreen();
+    }
+    
+    // Listen for browser fullscreen exit
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+}
 
-        // Update exercise info when exercise selection changes
-        document.getElementById('exercise').addEventListener('change', function() {
-            const exercise = this.value;
-            const infoElement = document.querySelector('.info-text');
+// Handle browser fullscreen change
+function handleFullscreenChange() {
+    if (!document.fullscreenElement && 
+        !document.webkitFullscreenElement && 
+        !document.mozFullScreenElement &&
+        !document.msFullscreenElement) {
+        // Browser's fullscreen was exited, so exit our fullscreen mode too
+        if (isFullscreen) {
+            exitFullscreen();
+        }
+    }
+}
+
+// Exit fullscreen mode
+function exitFullscreen() {
+    isFullscreen = false;
+    const fullscreenContainer = document.getElementById('fullscreenContainer');
+    fullscreenContainer.style.display = 'none';
+    
+    // Exit browser fullscreen if active
+    if (document.fullscreenElement || 
+        document.webkitFullscreenElement || 
+        document.mozFullScreenElement ||
+        document.msFullscreenElement) {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+    
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+}
+
+// Update fullscreen stats
+function updateFullscreenStats() {
+    document.getElementById('fullscreenReps').innerText = document.getElementById('repCount').innerText;
+    document.getElementById('fullscreenForm').innerText = document.getElementById('formScore').innerText;
+    document.getElementById('fullscreenTime').innerText = document.getElementById('duration').innerText;
+    document.getElementById('fullscreenStatus').innerText = document.getElementById('status').innerText;
+}
+
+// Update fullscreen with result frame
+function updateFullscreenWithResultFrame() {
+    if (!isFullscreen) return;
+    
+    const resultView = document.getElementById('resultView');
+    if (resultView.src) {
+        document.getElementById('fullscreenVideo').style.display = 'none';
+        
+        // Create a video element to display the result in fullscreen
+        if (!window.fullscreenResultVideo) {
+            window.fullscreenResultVideo = document.createElement('img');
+            window.fullscreenResultVideo.className = 'fullscreen-video';
+            document.getElementById('fullscreenContainer').appendChild(window.fullscreenResultVideo);
+        }
+        
+        window.fullscreenResultVideo.src = resultView.src;
+        window.fullscreenResultVideo.style.display = 'block';
+    }
+}
+
+// Stop exercise from fullscreen mode
+function stopExerciseFullscreen() {
+    exitFullscreen();
+    stopExercise();
+}
+
+function startExercise() {
+    const exerciseType = document.getElementById("exercise").value;
+    videoElement = document.getElementById("cameraView");
+    document.getElementById("resultPlaceholder").style.display = "none";
+    document.getElementById("resultView").style.display = "block";
+    document.getElementById("startButton").style.display = "none";
+    document.getElementById("stopButton").style.display = "block";
+    
+    // Switch to analysis tab
+    switchTab('analysis');
+    
+    // Update status
+    document.getElementById("status").innerText = "Starting camera...";
+    document.getElementById("connectionIcon").className = "status-icon yellow";
+    
+    // Reset stats
+    repCount = 0;
+    document.getElementById("repCount").innerText = "0";
+    document.getElementById("formScore").innerText = "0%";
+    document.getElementById("duration").innerText = "0:00";
+    
+    // Start timer
+    startTime = new Date();
+    durationInterval = setInterval(updateDuration, 1000);
+    
+    // Create canvas for capturing frames
+    canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 480;
+    ctx = canvas.getContext('2d');
+    
+    // Start camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(mediaStream) {
+            stream = mediaStream;
+            videoElement.srcObject = mediaStream;
+            videoElement.style.display = "block";
             
-            const exerciseInfo = {
-                'squat': 'Stand with feet shoulder-width apart. Lower your body as if sitting in a chair, keeping knees from extending past your toes. Keep your back straight and chest up. Return to standing position by pushing through your heels.',
-                'plank': 'Start in a prone position, then lift your body using your palms and toes. Keep your body in a straight line from head to heels. Engage your core and don\'t let your hips sag or lift too high.',
-                'pushup': 'Start in a high plank position. Lower your body by bending your elbows until your chest nearly touches the floor. Keep your body straight and engage your core. Push back to the starting position.',
-                'lunges': 'Stand tall, step one foot forward and lower your body until both knees form 90-degree angles. Your front knee should not extend past your toes. Push through your front heel to return to the starting position.',
-                'deadlift': 'Stand with feet shoulder-width apart, slightly bend your knees and lower your hips. Keep your back straight, grip your weight, and lift by pushing your hips forward. Keep the weight close to your body throughout the movement.'
+            // Check orientation for auto fullscreen
+            checkOrientation();
+            
+            // Connect to WebSocket
+            ws = new WebSocket(`https://caai.s4h.edu.vn/${exerciseType}`);
+            
+            ws.onopen = function() {
+                console.log("WebSocket connected!");
+                document.getElementById("connection").innerText = "Connected";
+                document.getElementById("connectionIcon").className = "status-icon green";
+                running = true;
+                
+                // Start sending frames
+                sendInterval = setInterval(sendFrame, 100); // Send 10 frames per second
             };
             
-            infoElement.textContent = exerciseInfo[exercise] || exerciseInfo['squat'];
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                // Update the video view
+                document.getElementById("resultView").src = "data:image/jpeg;base64," + data.video_frame;
+                
+                // If in fullscreen mode, update the fullscreen view with the result
+                if (isFullscreen) {
+                    updateFullscreenWithResultFrame();
+                }
+                
+                // Update status
+                document.getElementById("status").innerText = `${data.status}`;
+                
+                // Update errors
+                if (data.errors && data.errors.length > 0) {
+                    document.getElementById("errors").innerText = `${data.errors.join(", ")}`;
+                } else {
+                    document.getElementById("errors").innerText = "No errors";
+                }
+                
+                // Update rep count if provided
+                if (data.rep_count !== undefined) {
+                    repCount = data.rep_count;
+                    document.getElementById("repCount").innerText = repCount;
+                }
+                
+                // Update form score if provided
+                if (data.form_score !== undefined) {
+                    const score = Math.round(data.form_score * 100);
+                    document.getElementById("formScore").innerText = `${score}%`;
+                }
+                
+                // Update fullscreen stats if in fullscreen mode
+                if (isFullscreen) {
+                    updateFullscreenStats();
+                }
+            };
+            
+            ws.onerror = function(error) {
+                console.error("WebSocket error:", error);
+                document.getElementById("connection").innerText = "Error";
+                document.getElementById("connectionIcon").className = "status-icon red";
+                stopExercise();
+            };
+            
+            ws.onclose = function() {
+                console.log("WebSocket closed.");
+                document.getElementById("connection").innerText = "Closed";
+                document.getElementById("connectionIcon").className = "status-icon red";
+                stopExercise();
+            };
+        })
+        .catch(function(err) {
+            console.error("Error accessing camera: ", err);
+            document.getElementById("status").innerText = "Camera error";
+            document.getElementById("connectionIcon").className = "status-icon red";
         });
-        
-        function startExercise() {
-            const exerciseType = document.getElementById("exercise").value;
-            videoElement = document.getElementById("cameraView");
-            document.getElementById("resultPlaceholder").style.display = "none";
-            document.getElementById("resultView").style.display = "block";
-            document.getElementById("startButton").style.display = "none";
-            document.getElementById("stopButton").style.display = "block";
-            
-            // Switch to analysis tab
-            switchTab('analysis');
-            
-            // Update status
-            document.getElementById("status").innerText = "Starting camera...";
-            document.getElementById("connectionIcon").className = "status-icon yellow";
-            
-            // Reset stats
-            repCount = 0;
-            document.getElementById("repCount").innerText = "0";
-            document.getElementById("formScore").innerText = "0%";
-            document.getElementById("duration").innerText = "0:00";
-            
-            // Start timer
-            startTime = new Date();
-            durationInterval = setInterval(updateDuration, 1000);
-            
-            // Create canvas for capturing frames
-            canvas = document.createElement('canvas');
-            canvas.width = 640;
-            canvas.height = 480;
-            ctx = canvas.getContext('2d');
-            
-            // Start camera
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(mediaStream) {
-                    stream = mediaStream;
-                    videoElement.srcObject = mediaStream;
-                    
-                    // Connect to WebSocket
-                    ws = new WebSocket(`https://caai.s4h.edu.vn/${exerciseType}`);
-                    
-                    ws.onopen = function() {
-                        console.log("WebSocket connected!");
-                        document.getElementById("connection").innerText = "Connected";
-                        document.getElementById("connectionIcon").className = "status-icon green";
-                        running = true;
-                        
-                        // Start sending frames
-                        sendInterval = setInterval(sendFrame, 100); // Send 10 frames per second
-                    };
-                    
-                    ws.onmessage = function(event) {
-                        const data = JSON.parse(event.data);
-                        
-                        // Update the video view
-                        document.getElementById("resultView").src = "data:image/jpeg;base64," + data.video_frame;
-                        
-                        // Update status
-                        document.getElementById("status").innerText = `${data.status}`;
-                        
-                        // Update errors
-                        if (data.errors && data.errors.length > 0) {
-                            document.getElementById("errors").innerText = `${data.errors.join(", ")}`;
-                        } else {
-                            document.getElementById("errors").innerText = "No errors";
-                        }
-                        
-                        // Update rep count if provided
-                        if (data.rep_count !== undefined) {
-                            repCount = data.rep_count;
-                            document.getElementById("repCount").innerText = repCount;
-                        }
-                        
-                        // Update form score if provided
-                        if (data.form_score !== undefined) {
-                            const score = Math.round(data.form_score * 100);
-                            document.getElementById("formScore").innerText = `${score}%`;
-                        }
-                    };
-                    
-                    ws.onerror = function(error) {
-                        console.error("WebSocket error:", error);
-                        document.getElementById("connection").innerText = "Error";
-                        document.getElementById("connectionIcon").className = "status-icon red";
-                        stopExercise();
-                    };
-                    
-                    ws.onclose = function() {
-                        console.log("WebSocket closed.");
-                        document.getElementById("connection").innerText = "Closed";
-                        document.getElementById("connectionIcon").className = "status-icon red";
-                        stopExercise();
-                    };
-                })
-                .catch(function(err) {
-                    console.error("Error accessing camera: ", err);
-                    document.getElementById("status").innerText = "Camera error";
-                    document.getElementById("connectionIcon").className = "status-icon red";
-                });
-        }
-        
-        function sendFrame() {
-            if (!running) return;
-            
-            // Draw video frame to canvas
-            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-            
-            // Convert to base64
-            const frameData = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
-            
-            // Send to server
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({
-                    frame: frameData,
-                    difficulty: document.querySelector('.difficulty-btn.active').dataset.level
-                }));
-            }
-        }
-        
-        function stopExercise() {
-            running = false;
-            
-            // Stop sending frames
-            if (sendInterval) {
-                clearInterval(sendInterval);
-            }
-            
-            // Stop duration timer
-            if (durationInterval) {
-                clearInterval(durationInterval);
-            }
-            
-            // Close camera
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-            
-            // Close WebSocket
-            if (ws) {
-                ws.close();
-            }
-            
-            // Update UI
-            document.getElementById("startButton").style.display = "block";
-            document.getElementById("stopButton").style.display = "none";
-            document.getElementById("resultPlaceholder").style.display = "flex";
-            document.getElementById("resultView").style.display = "none";
-            document.getElementById("status").innerText = "Stopped";
-            document.getElementById("connection").innerText = "Waiting...";
-            document.getElementById("connectionIcon").className = "status-icon yellow";
-        }
-        
-        function updateDuration() {
-            if (!startTime) return;
-            
-            const now = new Date();
-            const diff = Math.floor((now - startTime) / 1000);
-            const minutes = Math.floor(diff / 60);
-            const seconds = diff % 60;
-            
-            document.getElementById("duration").innerText = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-        }
-        
-        // Prevent zoom on double tap (mobile optimization)
-        document.addEventListener('touchend', function(event) {
-            const now = new Date().getTime();
-            const timeSince = now - (this.lastTouch || now);
-            this.lastTouch = now;
+}
 
-            if (timeSince < 300) {
-                event.preventDefault();
-            }
-        }, false);
+function sendFrame() {
+    if (!running) return;
+    
+    // Draw video frame to canvas
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+    
+    // Convert to base64
+    const frameData = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+    
+    // Send to server
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            frame: frameData,
+            difficulty: document.querySelector('.difficulty-btn.active').dataset.level
+        }));
+    }
+}
+
+function stopExercise() {
+    running = false;
+    
+    // Stop sending frames
+    if (sendInterval) {
+        clearInterval(sendInterval);
+    }
+    
+    // Stop duration timer
+    if (durationInterval) {
+        clearInterval(durationInterval);
+    }
+    
+    // Close camera
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+    }
+    
+    // Close WebSocket
+    if (ws) {
+        ws.close();
+    }
+    
+    // Exit fullscreen if active
+    if (isFullscreen) {
+        exitFullscreen();
+    }
+    
+    // Update UI
+    document.getElementById("startButton").style.display = "block";
+    document.getElementById("stopButton").style.display = "none";
+    document.getElementById("resultPlaceholder").style.display = "flex";
+    document.getElementById("resultView").style.display = "none";
+    document.getElementById("cameraView").style.display = "none";
+    document.getElementById("status").innerText = "Stopped";
+    document.getElementById("connection").innerText = "Waiting...";
+    document.getElementById("connectionIcon").className = "status-icon yellow";
+    
+    // Remove fullscreen result video if exists
+    if (window.fullscreenResultVideo) {
+        window.fullscreenResultVideo.style.display = "none";
+    }
+}
+
+function updateDuration() {
+    if (!startTime) return;
+    
+    const now = new Date();
+    const diff = Math.floor((now - startTime) / 1000);
+    const minutes = Math.floor(diff / 60);
+    const seconds = diff % 60;
+    
+    const timeText = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    document.getElementById("duration").innerText = timeText;
+    
+    // Update fullscreen time if in fullscreen mode
+    if (isFullscreen) {
+        document.getElementById("fullscreenTime").innerText = timeText;
+    }
+}
+
+// Prevent zoom on double tap (mobile optimization)
+document.addEventListener('touchend', function(event) {
+    const now = new Date().getTime();
+    const timeSince = now - (this.lastTouch || now);
+    this.lastTouch = now;
+
+    if (timeSince < 300) {
+        event.preventDefault();
+    }
+}, false);
+
+// Check orientation on load
+window.addEventListener('load', checkOrientation);
+    
     </script>
 </body>
 </html>
+
+        
