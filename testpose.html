@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MoveNet Skeleton</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+</head>
+<body>
+<video id="video" width="640" height="480" autoplay muted></video>
+<canvas id="canvas" width="640" height="480"></canvas>
+
+<script>
+  async function main() {
+    await tf.setBackend('webgl');
+    const detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet);
+
+    const video = document.getElementById('video');
+    const stream = await navigator.mediaDevices.getUserMedia({video: true});
+    video.srcObject = stream;
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    video.onloadeddata = async () => {
+      while (true) {
+        const poses = await detector.estimatePoses(video);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        poses.forEach(pose => {
+          pose.keypoints.forEach(kp => {
+            if (kp.score > 0.5) {
+              ctx.beginPath();
+              ctx.arc(kp.x, kp.y, 5, 0, 2 * Math.PI);
+              ctx.fillStyle = "red";
+              ctx.fill();
+            }
+          });
+
+          const adjacentPairs = poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet);
+          adjacentPairs.forEach(([i, j]) => {
+            if (pose.keypoints[i].score > 0.5 && pose.keypoints[j].score > 0.5) {
+              ctx.beginPath();
+              ctx.moveTo(pose.keypoints[i].x, pose.keypoints[i].y);
+              ctx.lineTo(pose.keypoints[j].x, pose.keypoints[j].y);
+              ctx.strokeStyle = "lime";
+              ctx.lineWidth = 3;
+              ctx.stroke();
+            }
+          });
+        });
+
+        await tf.nextFrame();
+      }
+    };
+  }
+
+  main();
+</script>
+</body>
+</html>
